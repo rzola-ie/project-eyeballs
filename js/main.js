@@ -184,7 +184,7 @@ class Sketch {
     if(this.shaderIndex === 0) return
 
     if(!this.video) this.video = document.createElement('video');
-    
+
     this.video.setAttribute('id', 'video')
     this.video.setAttribute('muted', 'true')
     this.video.setAttribute('autoplay', 'true')
@@ -195,7 +195,7 @@ class Sketch {
     this.videoTexture = new THREE.VideoTexture(this.video)
 
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { width: this.width, height: this.width * 1.777777, facingMode: 'environment' } };
+      const constraints = { video: { facingMode: 'environment' } };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
