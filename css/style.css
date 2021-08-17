@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+canvas {
+  display: block;
+}
+
+.header {
+  position: absolute;
+  top: 25px;
+  left: 10px;
+}
+
+.header a {
+  color: white;
+  text-decoration: none;
+}
+
+#container, #container-room {
+  height: 100vh;
+  width: 100vw;
+  background: #111;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  background-color: green;
+}
+
+#startButton {
+  position: absolute;
+  inset: 90% 50%;
+  width: 100px;
+  height: 40px;
+  border: 2px solid white;
+  border-radius: 4px;
+  background-color: transparent;
+  color: white;
+
+  transform: translate(-50%, 0);
+}
