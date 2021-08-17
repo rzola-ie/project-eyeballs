@@ -1,9 +1,7 @@
 import '../css/style.css'
 import * as THREE from 'three'
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-import handshake from '../static/assets/handshake.png'
 import room from '../static/assets/room.jpg';
 
 class Room {

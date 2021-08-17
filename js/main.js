@@ -21,25 +21,15 @@ import test from './test'
 
 class Sketch {
   constructor(options) {
+    this.scene = new THREE.Scene();
+
     this.container = document.getElementById(options.domElement)
     this.width = this.container.offsetWidth
     this.height = this.container.offsetWidth
 
-    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 10, 1000 )
-    this.camera.position.z = 600;
-    this.camera.fov = 2 * Math.atan( (this.height/2)/600 ) * 180/Math.PI
-
-    this.scene = new THREE.Scene();
-
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.renderer.setPixelRatio(window.devicePixelRatio)
-    this.renderer.setSize(this.width, this.height)
-
-    this.container.appendChild(this.renderer.domElement)
-
     this.time = 0;
 
-    this.shaderIndex = 0
+    this.shaderIndex = 1
     this.shaders = [
 
       {
@@ -64,12 +54,34 @@ class Sketch {
       }
     ]
 
-    this.settings();
-    this.setupResize();
-    this.resize();
-    this.addVideoFeed();
-    this.render();
+    this.startButton = document.getElementById('startButton')
+    this.startButton.addEventListener('click', () => {
+      this.init();
+      this.settings();
+      this.resize();
+      this.addVideoFeed();
+      this.render();
+      this.setupResize();
+    })
   }
+
+  init() {
+    const overlay = document.getElementById('overlay')
+    overlay.remove();
+
+    // set the camera
+    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 10, 1000 )
+    this.camera.position.z = 600;
+    this.camera.fov = 2 * Math.atan( (this.height/2)/600 ) * 180/Math.PI
+
+    //set the renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(this.width, this.height)
+    this.container.appendChild(this.renderer.domElement)
+
+  }
+
 
   settings() {
     this.settings = {
@@ -99,11 +111,6 @@ class Sketch {
       max: 0.5,
       disabled: true
     });
-
-    this.progressPane = this.pane.addInput(this.settings, 'progress', {
-      min: 0.0,
-      max: 1.0,
-    })
 
     this.pane.on('change', (ev) => {
       if(ev.target.label === 'filters') {
@@ -136,6 +143,7 @@ class Sketch {
       this.pane.expanded = false
     });
   }
+
 
   setupResize() {
     window.addEventListener('resize', this.resize.bind(this))
@@ -179,13 +187,14 @@ class Sketch {
     if(!this.video) this.video = document.createElement('video');
 
     this.video.setAttribute('id', 'video')
+    this.video.setAttribute('muted', 'true')
     this.video.style.display = 'none'
     document.body.appendChild(this.video);
-    console.log(this.video);
+
     this.videoTexture = new THREE.VideoTexture(this.video)
 
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { width: 1080, height: 1920, facingMode: 'environment' } };
+      const constraints = { video: { width: this.width, height: this.width * 1.777777, facingMode: 'environment' } };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
