@@ -31,7 +31,6 @@ class Sketch {
 
     this.shaderIndex = 0
     this.shaders = [
-
       {
         vertexShader: testVertex,
         fragmentShader: testFragment
@@ -85,7 +84,7 @@ class Sketch {
 
   settings() {
     this.settings = {
-      desaturate: -0.35
+      desaturate: -0.7
     }
 
     this.pane = new Pane({
@@ -113,15 +112,16 @@ class Sketch {
 
     this.pane.on('change', (ev) => {
       if(ev.target.label === 'filters') {
-        this.shaderMaterial.vertexShader = this.shaders[ev.value].vertexShader
-        this.shaderMaterial.fragmentShader = this.shaders[ev.value].fragmentShader
-        this.shaderMaterial.needsUpdate = true
         this.shaderIndex = ev.value
+        this.shaderMaterial.vertexShader = this.shaders[this.shaderIndex].vertexShader
+        this.shaderMaterial.fragmentShader = this.shaders[this.shaderIndex].fragmentShader
+        this.shaderMaterial.needsUpdate = true
 
-        if(ev.value !== 0) {
+        if(!this.video) {
           this.addVideoFeed()
-          this.video.play()
-        } else {
+        }
+
+        if(ev.value === 0) {
           this.videoTexture = null;
           this.video.pause()
           this.video.src = ""
