@@ -85,7 +85,6 @@ class Sketch {
 
   settings() {
     this.settings = {
-      progress: 0,
       desaturate: -0.35
     }
 
@@ -214,7 +213,7 @@ class Sketch {
     this.shaderMaterial.uniforms.feed.value = this.videoTexture
     this.shaderMaterial.uniforms.uTime.value = this.time
     this.shaderMaterial.uniforms.uDesaturate.value = this.settings.desaturate
-    this.shaderMaterial.uniforms.uProgress.value = this.settings.progress
+
     this.shaderMaterial.needsUpdate = true
     
     this.renderer.render(this.scene, this.camera)
