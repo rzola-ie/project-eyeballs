@@ -120,6 +120,7 @@ class Sketch {
 
         if(ev.value !== 0) {
           this.addVideoFeed()
+          this.video.play()
         } else {
           this.videoTexture = null;
           this.video.pause()
@@ -136,11 +137,6 @@ class Sketch {
         }
       }
     })
-
-    window.addEventListener('beforeunload', (event) => {
-      console.log('bye')
-      this.pane.expanded = false
-    });
   }
 
 
@@ -187,8 +183,8 @@ class Sketch {
 
     this.video.setAttribute('id', 'video')
     this.video.setAttribute('muted', 'true')
-    this.video.setAttribute('autoplay', 'true')
-    this.video.setAttribute('playsinline', 'true')
+    this.video.setAttribute('autoplay', '')
+    this.video.setAttribute('playsinline', '')
     this.video.style.display = 'none'
     document.body.appendChild(this.video);
 
