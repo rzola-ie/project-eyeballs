@@ -111,14 +111,14 @@ void main() {
   if(leftUv.x > 0.9) discard;
   
   vec3 colLeft;
-  colLeft.rgb = texture( feed, leftUv ).rgb;
+  colLeft.rgb = texture2D( feed, leftUv ).rgb;
   colLeft *= (1.0 - amount * uDoubleOffset);
 
   vec2 rightUv = vec2(vUv.x+amount,vUv.y);
   if(rightUv.x < 0.1) discard;
 
   vec3 colRight;
-  colRight.rgb = texture( feed, rightUv ).rgb;
+  colRight.rgb = texture2D( feed, rightUv ).rgb;
   colRight *= (1.0 - amount * uDoubleOffset);
 
   vec3 colFinal;
