@@ -184,9 +184,11 @@ class Sketch {
     if(this.shaderIndex === 0) return
 
     if(!this.video) this.video = document.createElement('video');
-
+    
     this.video.setAttribute('id', 'video')
     this.video.setAttribute('muted', 'true')
+    this.video.setAttribute('autoplay', 'true')
+    this.video.setAttribute('playsinline', 'true')
     this.video.style.display = 'none'
     document.body.appendChild(this.video);
 
@@ -198,7 +200,7 @@ class Sketch {
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
         this.video.srcObject = stream;
-        this.video.play()
+        // this.video.play()
       }).catch((error) => {
         console.error('Unable to access the camera/webcam', error)
       })
