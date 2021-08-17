@@ -31,7 +31,7 @@ canvas {
 #overlay {
   position: absolute;
   inset: 0;
-  background-color: green;
+  background-color: black;
 }
 
 #startButton {
@@ -43,6 +43,5 @@ canvas {
   border-radius: 4px;
   background-color: transparent;
   color: white;
-
   transform: translate(-50%, 0);
 }

@@ -185,7 +185,7 @@ class Sketch {
     this.videoTexture = new THREE.VideoTexture(this.video)
 
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { width: 360, height: 640, facingMode: 'environment' } };
+      const constraints = { video: { width: 1080, height: 1920, facingMode: 'environment' } };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
