@@ -29,7 +29,7 @@ class Sketch {
 
     this.time = 0;
 
-    this.shaderIndex = 1
+    this.shaderIndex = 0
     this.shaders = [
 
       {
