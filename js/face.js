@@ -1,5 +1,9 @@
 import '../css/style.css'
-import * as THREE from 'three'
+
+import './dist/jeelizFaceFilter.js'
+import './lib/three/v112/three.min.js'
+import './helpers/JeelizResizer.js'
+import './helpers/JeelizThreeHelper.js'
 
 import { Pane } from 'tweakpane';
 
