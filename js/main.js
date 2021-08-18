@@ -86,7 +86,7 @@ class Sketch {
   settings() {
     this.settings = {
       doubleOffset: 0.4,
-      doubleMix: 0.2,
+      doubleMix: 0.6,
       desaturate: -0.7
     }
 
