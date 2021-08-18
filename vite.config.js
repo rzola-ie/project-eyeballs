@@ -7,7 +7,8 @@ module.exports = defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        room: resolve(__dirname, 'room.html')
+        room: resolve(__dirname, 'room.html'),
+        face: resolve(__dirname, 'face.html')
       }
     }
   }

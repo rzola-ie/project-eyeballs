@@ -8,7 +8,7 @@ class Room {
   constructor(options) {
     this.scene = new THREE.Scene();
 
-    this.container = document.getElementById(options.dom)
+    this.container = document.getElementById(options.domElement)
     this.width = this.container.offsetWidth
     this.height = this.container.offsetWidth
     
@@ -19,7 +19,6 @@ class Room {
       this.render();
       this.setupResize();
     })
-
 
     this.time = 0;
   }
@@ -79,4 +78,4 @@ class Room {
   }
 }
 
-new Room({ dom: 'container-room'})
+new Room({ domElement: 'container-room'})

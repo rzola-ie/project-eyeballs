@@ -180,18 +180,18 @@ class Sketch {
     this.camera.fov = 2 * Math.atan( (this.height/2)/600 ) * 180/Math.PI
     this.camera.updateProjectionMatrix();
 
-    //landscape
+    // device orientation
     if(this.mesh) {
       if(this.width > this.height) {
+        //landscape
         this.mesh.scale.set(Math.ceil(this.height * 1.777777), this.height, 1)
       } else {
+        //portrait
         this.mesh.scale.set(this.width, this.width * 1.777777, 1)
       }
 
       this.addVideoFeed()
     }
-
-    console.log('bleep bleep bloop')
   }
 
   addScreen() {
@@ -213,9 +213,15 @@ class Sketch {
 
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
     this.scene.add(this.mesh)
-    this.mesh.scale.set(this.width, this.width * 1.777777, 1)
-  }
 
+    if(this.width > this.height) {
+      // landscape
+      this.mesh.scale.set(Math.ceil(this.height * 1.777777), this.height, 1)
+    } else {
+      // portrait
+      this.mesh.scale.set(this.width, this.width * 1.777777, 1)
+    }
+  }
 
   addVideoFeed() {
     if(this.shaderIndex === 0) return
