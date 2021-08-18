@@ -58,6 +58,7 @@ class Sketch {
       this.init();
       this.settings();
       this.resize();
+      this.addScreen();
       this.addVideoFeed();
       this.render();
       this.setupResize();
@@ -92,6 +93,8 @@ class Sketch {
     this.pane = new Pane({
       expanded: true
     });
+    window.pane = this.pane
+
     this.pane.addBlade({
       view: 'list',
       label: 'filters',
@@ -123,7 +126,6 @@ class Sketch {
       max: 1.0,
       disabled: true
     })
-    console.log(this.pane)
 
     this.pane.on('change', (ev) => {
       if(ev.target.label === 'filters') {
@@ -164,7 +166,6 @@ class Sketch {
     })
   }
 
-
   setupResize() {
     window.addEventListener('resize', this.resize.bind(this))
   }
@@ -178,11 +179,22 @@ class Sketch {
     this.camera.aspect = this.width / this.height;
     this.camera.fov = 2 * Math.atan( (this.height/2)/600 ) * 180/Math.PI
     this.camera.updateProjectionMatrix();
+
+    //landscape
+    if(this.mesh) {
+      if(this.width > this.height) {
+        this.mesh.scale.set(Math.ceil(this.height * 1.777777), this.height, 1)
+      } else {
+        this.mesh.scale.set(this.width, this.width * 1.777777, 1)
+      }
+
+      this.addVideoFeed()
+    }
+
+    console.log('bleep bleep bloop')
   }
 
-
-  addVideoFeed() {
-    console.log(this.width, this.height, window.devicePixelRatio, this.renderer.getPixelRatio())
+  addScreen() {
     this.geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
     this.shaderMaterial = new THREE.ShaderMaterial({ 
       vertexShader: this.shaders[this.shaderIndex].vertexShader,
@@ -202,19 +214,22 @@ class Sketch {
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
     this.scene.add(this.mesh)
     this.mesh.scale.set(this.width, this.width * 1.777777, 1)
+  }
 
+
+  addVideoFeed() {
     if(this.shaderIndex === 0) return
 
-    if(!this.video) this.video = document.createElement('video');
-
-    this.video.setAttribute('id', 'video')
-    this.video.setAttribute('muted', 'true')
-    this.video.setAttribute('autoplay', '')
-    this.video.setAttribute('playsinline', '')
-    this.video.style.display = 'none'
-    document.body.appendChild(this.video);
-
-    this.videoTexture = new THREE.VideoTexture(this.video)
+    if(!this.video) {
+      this.video = document.createElement('video');
+      this.video.setAttribute('id', 'video')
+      this.video.setAttribute('muted', 'true')
+      this.video.setAttribute('autoplay', '')
+      this.video.setAttribute('playsinline', '')
+      this.video.style.display = 'none'
+      document.body.appendChild(this.video);
+      this.videoTexture = new THREE.VideoTexture(this.video)
+    } 
 
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       const constraints = { video: { facingMode: 'environment' } };
