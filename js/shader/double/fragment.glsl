@@ -98,31 +98,33 @@ varying vec2 vUv;
 
 uniform sampler2D feed;
 uniform float uDoubleOffset;
+uniform float uDoubleMix;
 uniform float uTime;
 
 void main() {
   vec4 cameraView = texture2D(feed, vUv);
 
 	float amount = 1.0;
-	amount = pow(amount, 3.0);
-	amount *= 0.05;
+	amount = pow(uDoubleOffset + sin(uTime) * 0.05, 3.0);
+	// amount *= 0.05;
 
   vec2 leftUv = vec2(vUv.x-amount,vUv.y);
-  if(leftUv.x > 0.9) discard;
   
   vec3 colLeft;
   colLeft.rgb = texture2D( feed, leftUv ).rgb;
-  colLeft *= (1.0 - amount * uDoubleOffset);
+  colLeft *= (1.0 - amount);
 
   vec2 rightUv = vec2(vUv.x+amount,vUv.y);
-  if(rightUv.x < 0.1) discard;
 
   vec3 colRight;
   colRight.rgb = texture2D( feed, rightUv ).rgb;
-  colRight *= (1.0 - amount * uDoubleOffset);
+  colRight *= (1.0 - amount);
 
-  vec3 colFinal;
-  colFinal += mix(colLeft, colRight, 0.5);
+  vec3 colMixed;
+  colMixed += mix(colLeft, colRight, 0.5);
+
+  vec3 colFinal; 
+  colFinal += mix(colMixed, cameraView.rgb, uDoubleMix);
   
   // vec3 colFinal = mix(cameraView.rgb, mixed, 0.5);
 

@@ -84,6 +84,8 @@ class Sketch {
 
   settings() {
     this.settings = {
+      doubleOffset: 0.4,
+      doubleMix: 0.2,
       desaturate: -0.7
     }
 
@@ -110,12 +112,25 @@ class Sketch {
       disabled: true
     });
 
+    this.doubleOffsetPane = this.pane.addInput(this.settings, 'doubleOffset', {
+      min: 0.0,
+      max: 1.0,
+      disabled: true
+    })
+
+   this.doubleMixPane = this.pane.addInput(this.settings, 'doubleMix', {
+      min: 0.0,
+      max: 1.0,
+      disabled: true
+    })
+    console.log(this.pane)
+
     this.pane.on('change', (ev) => {
       if(ev.target.label === 'filters') {
         this.shaderIndex = ev.value
         this.shaderMaterial.vertexShader = this.shaders[this.shaderIndex].vertexShader
         this.shaderMaterial.fragmentShader = this.shaders[this.shaderIndex].fragmentShader
-        this.shaderMaterial.needsUpdate = true
+        
 
         if(!this.video) {
           this.addVideoFeed()
@@ -129,6 +144,14 @@ class Sketch {
           this.video.remove()
         }
 
+        if(ev.value === 2) {
+          this.doubleOffsetPane.disabled = false
+          this.doubleMixPane.disabled = false
+        } else {
+          this.doubleOffsetPane.disabled = true
+          this.doubleMixPane.disabled = true
+        }
+
 
         if(ev.value === 3) {
           this.colorPane.disabled = false
@@ -136,6 +159,8 @@ class Sketch {
           this.colorPane.disabled = true
         }
       }
+
+      this.shaderMaterial.needsUpdate = true
     })
   }
 
@@ -164,7 +189,8 @@ class Sketch {
       fragmentShader: this.shaders[this.shaderIndex].fragmentShader,
       uniforms: {
         uDesaturate: { value: this.settings.desaturate },
-        uDoubleOffset: { value: 0.5},
+        uDoubleOffset: { value: this.settings.doubleOffset },
+        uDoubleMix: { value: this.settings.doubleMix },
         feed: { value: 0 },
         uProgress: { value: 0.0 },
         uQuadSize: { value: new THREE.Vector2(100, 178) },
@@ -211,6 +237,8 @@ class Sketch {
     this.shaderMaterial.uniforms.feed.value = this.videoTexture
     this.shaderMaterial.uniforms.uTime.value = this.time
     this.shaderMaterial.uniforms.uDesaturate.value = this.settings.desaturate
+    this.shaderMaterial.uniforms.uDoubleOffset.value = this.settings.doubleOffset
+    this.shaderMaterial.uniforms.uDoubleMix.value = this.settings.doubleMix
 
     this.shaderMaterial.needsUpdate = true
     
