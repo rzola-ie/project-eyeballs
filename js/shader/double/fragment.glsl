@@ -105,20 +105,22 @@ void main() {
   vec4 cameraView = texture2D(feed, vUv);
 
 	float amount = 1.0;
-	amount = pow(uDoubleOffset + sin(uTime) * 0.05, 3.0);
+	amount = pow(uDoubleOffset + sin(uTime) * 0.04, 3.0);
 	// amount *= 0.05;
 
-  vec2 leftUv = vec2(vUv.x-amount,vUv.y);
+  vec2 leftUv = vec2(vUv.x - amount, vUv.y);
+  // if(leftUv.x < 0.0) discard;
   
   vec3 colLeft;
   colLeft.rgb = texture2D( feed, leftUv ).rgb;
-  colLeft *= (1.0 - amount);
+  // colLeft *= (1.0 - amount);
 
-  vec2 rightUv = vec2(vUv.x+amount,vUv.y);
+  vec2 rightUv = vec2(vUv.x + amount, vUv.y);
+  // if(leftUv.x > 1.0) discard;
 
   vec3 colRight;
-  colRight.rgb = texture2D( feed, rightUv ).rgb;
-  colRight *= (1.0 - amount);
+  colRight.rgb += texture2D( feed, rightUv ).rgb;
+  // colRight *= (1.0 - amount);
 
   vec3 colMixed;
   colMixed += mix(colLeft, colRight, 0.5);
@@ -128,5 +130,5 @@ void main() {
   
   // vec3 colFinal = mix(cameraView.rgb, mixed, 0.5);
 
-  gl_FragColor = vec4(colFinal, cameraView.a);
+  gl_FragColor = vec4(colFinal, 1.0);
 }
