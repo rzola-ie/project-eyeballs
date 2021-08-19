@@ -4,7 +4,7 @@ const { defineConfig } = require('vite')
 
 module.exports = defineConfig({
   build: {
-    minify: false,
+    sourcemap: true,
     rollupOptions: {
       include: {
 

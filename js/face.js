@@ -5,19 +5,26 @@ import './lib/three/v112/three.min.js'
 import './helpers/JeelizResizer.js'
 import './helpers/JeelizThreeHelper.js'
 
-import { Pane } from 'tweakpane';
-
 import faceVertex from './shader/face/vertex.glsl?raw'
 import faceFragment from './shader/face/fragment.glsl?raw'
 
 
 class Face {
   constructor(options) {
-    this.canvasId = options.canvasElement;
+    this.canvasId = options.canvasElement
+    this.canvas = document.getElementById(options.canvasElement)
+    this.width = window.innerWidth
+    this.height = window.innerHeight
     this.overlay = document.getElementById('overlay')
     this.startButton = document.getElementById('startButton')
     this.startButton.addEventListener('click', this.startDemo.bind(this))
   }
+
+  startDemo() {
+    this.init()
+    this.startButton.removeEventListener('click', this.startDemo.bind(this))
+  }
+
 
   init() {
     this.overlay.remove()
@@ -30,12 +37,16 @@ class Face {
     })
   }
 
-  startDemo() {
-    this.init()
-    this.startButton.removeEventListener('click', this.startDemo.bind(this))
-  }
-
   initFaceFilter(videoSettings) {
+    console.log(this.width, this.height)
+    if(this.width > this.height) {
+      this.canvas.style.width = this.height * 1.7777777 + 'px'
+      this.canvas.style.height = this.height + 'px'
+    } else {
+      this.canvas.style.width = this.width + 'px';
+      this.canvas.style.height = this.width * 1.777777  + 'px'
+    }
+
     JEELIZFACEFILTER.init({
       canvasId: this.canvasId,
       NNCPath: './js/neuralNets/', // path to JSON neural network model (NN_DEFAULT.json by default)

@@ -12,6 +12,7 @@ body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
   overflow: hidden;
+  background-color: black;
 }
 
 canvas {
@@ -58,12 +59,13 @@ canvas {
 }
 
 #three-canvas {
-  z-index: 11;
+  z-index: -1;
   position: absolute;
   max-height: 100%;
   max-width: 100%;
   left: 50%;
   top: 50%;
   width: 100vmin;
+  height: calc(100vw * 1.7777);
   transform: translate(-50%, -50%) rotateY(180deg);
 }
