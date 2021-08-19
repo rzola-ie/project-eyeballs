@@ -1,6 +1,6 @@
 import '../css/style.css'
 
-import './util/jeelizFaceFilter.js.js'
+import './utils/jeelizFaceFilter.js'
 import './lib/three/v112/three.min.js'
 import './helpers/JeelizResizer.js'
 import './helpers/JeelizThreeHelper.js'
