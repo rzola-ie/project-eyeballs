@@ -13,7 +13,8 @@ module.exports = defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         room: resolve(__dirname, 'room.html'),
-        face: resolve(__dirname, 'face.html')
+        face: resolve(__dirname, 'face.html'),
+        double: resolve(__dirname, 'double.html')
       }
     }
   },
