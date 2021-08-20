@@ -238,7 +238,7 @@ class Sketch {
     } 
 
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { facingMode: 'environment' } };
+      const constraints = { video: { facingMode: 'environment', width: 1920, height: 1080 } };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture

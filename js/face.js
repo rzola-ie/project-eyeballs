@@ -49,7 +49,7 @@ class Face {
 
     JEELIZFACEFILTER.init({
       canvasId: this.canvasId,
-      NNCPath: './js/neuralNets/', // path to JSON neural network model (NN_DEFAULT.json by default)
+      NNCPath: '/neuralNets/', // path to JSON neural network model (NN_DEFAULT.json by default)
       videoSettings: videoSettings,
       callbackReady: (errCode, spec) => {
         if (errCode){
