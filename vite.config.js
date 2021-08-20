@@ -3,6 +3,7 @@ const { resolve } = require('path')
 const { defineConfig } = require('vite')
 
 module.exports = defineConfig({
+  publicDir: 'static',
   build: {
     sourcemap: true,
     rollupOptions: {
