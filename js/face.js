@@ -79,7 +79,7 @@ class Face {
     /*
     faceLowPoly.json has been exported from dev/faceLowPoly.blend using THREE.JS blender exporter with Blender v2.76
     */
-    maskLoader.load('./js/models/faceLowPoly.json', (maskBufferGeometry) => {
+    maskLoader.load('/models/faceLowPoly.json', (maskBufferGeometry) => {
       maskBufferGeometry.computeVertexNormals();
       const threeMask = new THREE.Mesh(maskBufferGeometry, this.buildMaskMaterial(spec.videoTransformMat2));
       threeMask.frustumCulled=false;
