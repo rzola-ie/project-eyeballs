@@ -4,7 +4,7 @@ import './lib/three/v112/three.min.js'
 import './helpers/JeelizResizer.js'
 
 
-import '../dist/WebARRocksFace.js'
+import './utils/WebARRocksFace.js'
 import './helpers/webAR/WebARRocksFaceThreeHelper'
 import './helpers/webAR/WebARRocksResizer.js'
 import './helpers/webAR/WebARRocksFaceDebugHelper.js'
@@ -49,40 +49,6 @@ class Double {
 
   init() {
     console.log('oh hi')
-
-    // WEBARROCKSFACE.init({
-    //   canvasId: this.canvas.id,
-    //   videoElement: this.video.instance,
-    //   NNCPath: '/neuralNets/NN_FACE_0.json',
-    //   callbackReady: function(errCode, spec) {
-    //     console.log(spec)
-    //     if (errCode){
-    //       console.log('AN ERROR HAPPENS. ERROR CODE =', errCode);
-    //       return;
-    //     }
-
-    //     console.log('INFO: WEBARROCKSFACE IS READY');
-    //   }, //end callbackReady()
-
-    //   // called at each render iteration (drawing loop)
-    //   callbackTrack: function(detectState){
-    //     // render your scene here
-
-    //   }
-    // });
-
-    // WebARRocksFaceDebugHelper.init({
-    //   spec: {
-    //     GPUThermalThrottlingDetectionEnabled: true,
-    //     facingMode: 'environment'
-    //   }, // keep default specs
-    //   callbackReady: function(err, spec){
-    //     console.log('ready')
-    //   },
-    //   callbackTrack: function(detectState){
-    //     console.log('track, jack')
-    //   }
-    // })
 
     if(this.width > this.height) {
       this.canvasFace.instance.style.width = this.width + 'px'
