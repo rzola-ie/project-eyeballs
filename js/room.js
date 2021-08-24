@@ -1,6 +1,7 @@
 import '../css/style.css'
 import * as THREE from 'three'
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import room from '../static/assets/room.jpg';
 
@@ -11,20 +12,35 @@ class Room {
     this.container = document.getElementById(options.domElement)
     this.width = this.container.offsetWidth
     this.height = this.container.offsetWidth
+
+    this.time = 0;
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+    this.intersected = null;
+    this.castable = []
     
     this.startButton = document.getElementById('startButton')
     this.startButton.addEventListener('click', () => {
       this.init();
+      this.setupMouse();
+      this.addObject()
       this.resize();
+      this.addCrosshair()
       this.render();
       this.setupResize();
     })
 
-    this.time = 0;
+
+
+    
   }
 
   setupResize() {
     window.addEventListener('resize', this.resize.bind(this))
+  }
+
+  setupMouse() {
+    window.addEventListener('mousemove', this.onMouseMove.bind(this))
   }
 
   init() {
@@ -33,9 +49,7 @@ class Room {
 
     // set the camera
     this.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 1, 1100 );
-
-    // set the controls
-	  this.controls = new DeviceOrientationControls( this.camera );
+    this.camera.position.z = 5
 
     // set the room
     this.geometry = new THREE.SphereGeometry( 500, 60, 40 );
@@ -60,6 +74,16 @@ class Room {
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( this.width, this.height );
     this.container.appendChild(this.renderer.domElement)
+
+    // set the controls
+	  // this.controls = new DeviceOrientationControls( this.camera );
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls.enableDamping = true
+    this.controls.update()
+
+    const light = new THREE.DirectionalLight( 0xffffff, 1 );
+    light.position.set( 1, 1, 1 ).normalize();
+    this.scene.add( light );
   }
 
   resize() {
@@ -70,8 +94,91 @@ class Room {
     this.camera.updateProjectionMatrix();
   }
 
+  onMouseMove(_event) {
+    this.mouse.x = (_event.clientX / this.width) * 2 - 1
+    this.mouse.y = - (_event.clientY / this.height) * 2 + 1
+  }
+
+  addObject() {
+    this.box1 = new THREE.Group()
+    this.boxgeo = new THREE.BoxBufferGeometry(1, 1, 1)
+    this.boxmat = new THREE.MeshLambertMaterial({
+      color: Math.random() * 0xffffff
+    })
+
+    this.boxmesh = new THREE.Mesh(this.boxgeo, this.boxmat)
+    this.castable.push(this.boxmesh)
+    this.scene.add(this.boxmesh)
+
+    this.hoverGeo = new THREE.BoxBufferGeometry(1.2, 1.2, 1.2)
+    this.hoverMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.BackSide,
+      transparent: true,
+      opacity: 0.4
+    })
+    this.hoverMesh = new THREE.Mesh(this.hoverGeo, this.hoverMat)
+
+    this.box1.add(this.boxmesh, this.hoverMesh)
+
+    this.scene.add(this.box1)
+
+  }
+
+  addCrosshair() {
+    // Draw a line from pointA in the given direction at distance 100
+    var pointA = new THREE.Vector3( 0, 0, 0 );
+    var direction = new THREE.Vector3( 10, 0, 0 );
+    direction.normalize();
+
+    var distance = 100; // at what distance to determine pointB
+
+    var pointB = new THREE.Vector3();
+    pointB.addVectors ( pointA, direction.multiplyScalar( distance ) );
+
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push( pointA );
+    geometry.vertices.push( pointB );
+    var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+    var line = new THREE.Line( geometry, material );
+    this.scene.add( line );
+
+  }
+
   render() {
     this.time += 0.01;
+
+    this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
+
+    this.intersects = this.raycaster.intersectObjects( this.castable );
+
+    if ( this.intersects.length > 0 ) {
+
+      if ( this.intersected != this.intersects[ 0 ].object ) {
+
+        if ( this.intersected ) this.intersected.material.emissive.setHex( this.intersected.currentHex );
+
+        this.intersected = this.intersects[ 0 ].object;
+        this.intersected.currentHex = this.intersected.material.emissive.getHex();
+        this.intersected.material.emissive.setHex( 0xff0000 );
+
+      }
+
+    } else {
+
+      if ( this.intersected ) this.intersected.material.emissive.setHex( this.intersected.currentHex );
+
+      this.intersected = null;
+
+    }
+
+    this.boxmesh.rotation.x = this.time;
+    this.boxmesh.rotation.z = this.time;
+
+    this.hoverMesh.rotation.x = this.boxmesh.rotation.x
+    this.hoverMesh.rotation.z = this.boxmesh.rotation.z
+
+
     requestAnimationFrame(this.render.bind(this))
     this.controls.update();
     this.renderer.render(this.scene, this.camera)

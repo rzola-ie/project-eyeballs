@@ -1,9 +1,8 @@
-varying vec2 vUv;
-
 uniform sampler2D feed;
 
-void main() {
-  vec4 cameraView = texture2D(feed, vUv);
+varying vec2 vUv;
 
-  gl_FragColor = cameraView;
+void main() {
+  gl_FragColor = texture2D(feed, vUv);
+  // gl_FragColor = vec4(vUv, 1.0, 1.0);
 }

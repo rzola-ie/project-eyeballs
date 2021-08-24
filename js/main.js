@@ -216,10 +216,10 @@ class Sketch {
 
     if(this.width > this.height) {
       // landscape
-      this.mesh.scale.set(Math.ceil(this.height * 1.777777), this.height, 1)
+      this.mesh.scale.set(this.width, this.height, 1)
     } else {
       // portrait
-      this.mesh.scale.set(this.width, this.width * 1.777777, 1)
+      this.mesh.scale.set(this.width, this.height, 1)
     }
   }
 
@@ -227,18 +227,33 @@ class Sketch {
     if(this.shaderIndex === 0) return
 
     if(!this.video) {
+  // <video id="video" autoplay="true" playsinline="true" muted="true" style="
+  //width: 1280px; 
+  //height: 720px; 
+  //transform: scale(0.0001, 0.0001); 
+  //position: fixed; 
+  //bottom: 0px; 
+  //right: 0px;"></video>
+
       this.video = document.createElement('video');
+      this.video.style.width = `800px`
+      this.video.style.height = `600px`
+      this.video.style.transform = `scale(0.0001, 0.0001)`
+      this.video.style.position = `fixed`
+      this.video.style.bottom = `0px`
+      this.video.style.right = `0px`
+
       this.video.setAttribute('id', 'video')
       this.video.setAttribute('muted', 'true')
-      this.video.setAttribute('autoplay', '')
-      this.video.setAttribute('playsinline', '')
-      this.video.style.display = 'none'
+      this.video.setAttribute('autoplay', 'true')
+      this.video.setAttribute('playsinline', 'true')
+
       document.body.appendChild(this.video);
       this.videoTexture = new THREE.VideoTexture(this.video)
     } 
 
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { facingMode: 'environment', width: 1920, height: 1080 } };
+      const constraints = { video: { facingMode: 'environment'} };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
