@@ -227,14 +227,6 @@ class Sketch {
     if(this.shaderIndex === 0) return
 
     if(!this.video) {
-  // <video id="video" autoplay="true" playsinline="true" muted="true" style="
-  //width: 1280px; 
-  //height: 720px; 
-  //transform: scale(0.0001, 0.0001); 
-  //position: fixed; 
-  //bottom: 0px; 
-  //right: 0px;"></video>
-
       this.video = document.createElement('video');
       this.video.style.width = `800px`
       this.video.style.height = `600px`

@@ -22,25 +22,20 @@ class Room {
     this.startButton = document.getElementById('startButton')
     this.startButton.addEventListener('click', () => {
       this.init();
-      this.setupMouse();
-      this.addObject()
-      this.resize();
-      this.addCrosshair()
-      this.render();
-      this.setupResize();
-    })
 
-
-
-    
+    })    
   }
 
   setupResize() {
     window.addEventListener('resize', this.resize.bind(this))
   }
 
-  setupMouse() {
+  setupMouseMove() {
     window.addEventListener('mousemove', this.onMouseMove.bind(this))
+  }
+
+  setupMouseClick() {
+    window.addEventListener('pointerdown', this.onMouseDown.bind(this))
   }
 
   init() {
@@ -75,12 +70,27 @@ class Room {
     this.renderer.setSize( this.width, this.height );
     this.container.appendChild(this.renderer.domElement)
 
-    // set the controls
-	  // this.controls = new DeviceOrientationControls( this.camera );
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.enableDamping = true
-    this.controls.update()
 
+
+    this.addControls()
+    this.addLights()
+    this.setupMouseMove()
+    this.setupMouseClick()
+    this.addObject()
+    this.resize()
+    this.render()
+    this.setupResize()
+  }
+
+  addControls() {
+    // set the controls
+	  this.controls = new DeviceOrientationControls( this.camera );
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    // this.controls.enableDamping = true
+    // this.controls.update()
+  }
+
+  addLights() {
     const light = new THREE.DirectionalLight( 0xffffff, 1 );
     light.position.set( 1, 1, 1 ).normalize();
     this.scene.add( light );
@@ -99,6 +109,17 @@ class Room {
     this.mouse.y = - (_event.clientY / this.height) * 2 + 1
   }
 
+  onMouseDown(_event) {
+    console.log('doinks')
+    if(this.intersects.length > 0) {
+      if(this.intersected) {
+        console.log(window.origin)
+        console.log(this.intersected.userData)
+        window.location.href = window.origin + this.intersected.userData
+      }
+    }
+  }
+
   addObject() {
     this.box1 = new THREE.Group()
     this.boxgeo = new THREE.BoxBufferGeometry(1, 1, 1)
@@ -107,6 +128,8 @@ class Room {
     })
 
     this.boxmesh = new THREE.Mesh(this.boxgeo, this.boxmat)
+    this.boxmesh.userData = '/face.html'
+    this.boxmesh.position.z = -3
     this.castable.push(this.boxmesh)
     this.scene.add(this.boxmesh)
 
@@ -118,6 +141,7 @@ class Room {
       opacity: 0.4
     })
     this.hoverMesh = new THREE.Mesh(this.hoverGeo, this.hoverMat)
+    this.hoverMesh.position.copy(this.boxmesh.position)
 
     this.box1.add(this.boxmesh, this.hoverMesh)
 
@@ -125,25 +149,7 @@ class Room {
 
   }
 
-  addCrosshair() {
-    // Draw a line from pointA in the given direction at distance 100
-    var pointA = new THREE.Vector3( 0, 0, 0 );
-    var direction = new THREE.Vector3( 10, 0, 0 );
-    direction.normalize();
 
-    var distance = 100; // at what distance to determine pointB
-
-    var pointB = new THREE.Vector3();
-    pointB.addVectors ( pointA, direction.multiplyScalar( distance ) );
-
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push( pointA );
-    geometry.vertices.push( pointB );
-    var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-    var line = new THREE.Line( geometry, material );
-    this.scene.add( line );
-
-  }
 
   render() {
     this.time += 0.01;
