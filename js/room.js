@@ -103,6 +103,7 @@ class Room {
     if(this.isMobile) {
       // orientation controls
       this.controls = new DeviceOrientationControls( this.camera );
+      this.controls.isLocked = true
     } else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
 
