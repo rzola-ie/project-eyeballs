@@ -20,7 +20,6 @@ class Room {
     this.castable = []
 
     this.gyroPresent = false
-    this.started = false
     
     this.init();
 
@@ -47,7 +46,6 @@ class Room {
   }
 
   init() {
-
     // set the camera
     this.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 1, 1100 );
     this.camera.position.z = 5
@@ -68,7 +66,6 @@ class Room {
     this.helperGeometry = new THREE.BoxGeometry( 100, 100, 100, 4, 4, 4 );
     this.helperMaterial = new THREE.MeshBasicMaterial( { color: 0xff00ff, wireframe: true } );
     this.helper = new THREE.Mesh( this.helperGeometry, this.helperMaterial );
-    // this.scene.add( this.helper );
 
     // set the renderer
     this.renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -89,25 +86,21 @@ class Room {
   }
 
   addControls() {
-
+    const blocker = document.getElementById( 'blocker' );
+    const instructions = document.getElementById( 'instructions' );
     // set the controls
     if(this.gyroPresent) {
       // orientation controls
       this.controls = new DeviceOrientationControls( this.camera );
+      instructions.style.display = 'none';
+      blocker.style.display = 'none';
 
     } else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
-      const blocker = document.getElementById( 'blocker' );
-      const instructions = document.getElementById( 'instructions' );
+
 
 				instructions.addEventListener( 'click',  () => {
-alert('bro')
-					this.controls.lock();
 
-				});
-
-				instructions.addEventListener( 'touchstart',  () => {
-          alert('bro')
 					this.controls.lock();
 
 				});
@@ -127,8 +120,7 @@ alert('bro')
 				} );
 
     }
-    console.log(this.controls)
-    this.started = true
+
   }
 
   addLights() {
