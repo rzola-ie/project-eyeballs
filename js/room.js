@@ -20,6 +20,10 @@ class Room {
     this.castable = []
 
     this.gyroPresent = false
+    this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    this.blocker = document.getElementById( 'blocker' );
+    this.instructions = document.getElementById( 'instructions' );
     
     this.init();
 
@@ -86,16 +90,15 @@ class Room {
   }
 
   addControls() {
-    const blocker = document.getElementById( 'blocker' );
-    const instructions = document.getElementById( 'instructions' );
+    if(this.isMobile) {
+      this.blocker.style.display = 'none'
+      this.instructions.style.display = 'none'
+    }
 
     // set the controls
     if(this.gyroPresent) {
       // orientation controls
       this.controls = new DeviceOrientationControls( this.camera );
-      instructions.style.display = 'none';
-      blocker.style.display = 'none';
-
     } else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
 
