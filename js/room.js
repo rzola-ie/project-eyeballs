@@ -1,6 +1,7 @@
 import '../css/style.css'
 import * as THREE from 'three'
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import room from '../static/assets/room.jpg';
@@ -18,12 +19,12 @@ class Room {
     this.mouse = new THREE.Vector2();
     this.intersected = null;
     this.castable = []
-    
-    this.startButton = document.getElementById('startButton')
-    this.startButton.addEventListener('click', () => {
-      this.init();
 
-    })    
+    this.gyroPresent = false
+    this.started = false
+    
+    this.init();
+
   }
 
   setupResize() {
@@ -38,9 +39,15 @@ class Room {
     window.addEventListener('pointerdown', this.onMouseDown.bind(this))
   }
 
+  checkForGyro() {
+    window.addEventListener('devicemotion', _event => {
+      if(_event.rotationRate.alpha || _event.rotationRate.beta || _event.rotationRate.gamma) {
+        this.gyroPresent = true
+      }
+    })
+  }
+
   init() {
-    const overlay = document.getElementById('overlay')
-    overlay.remove();
 
     // set the camera
     this.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 1, 1100 );
@@ -62,7 +69,7 @@ class Room {
     this.helperGeometry = new THREE.BoxGeometry( 100, 100, 100, 4, 4, 4 );
     this.helperMaterial = new THREE.MeshBasicMaterial( { color: 0xff00ff, wireframe: true } );
     this.helper = new THREE.Mesh( this.helperGeometry, this.helperMaterial );
-    this.scene.add( this.helper );
+    // this.scene.add( this.helper );
 
     // set the renderer
     this.renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -71,7 +78,7 @@ class Room {
     this.container.appendChild(this.renderer.domElement)
 
 
-
+    this.checkForGyro()
     this.addControls()
     this.addLights()
     this.setupMouseMove()
@@ -83,11 +90,40 @@ class Room {
   }
 
   addControls() {
+
     // set the controls
-	  this.controls = new DeviceOrientationControls( this.camera );
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    // this.controls.enableDamping = true
-    // this.controls.update()
+    if(this.gyroPresent) {
+      // orientation controls
+      this.controls = new DeviceOrientationControls( this.camera );
+
+    } else {
+      this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
+      	const blocker = document.getElementById( 'blocker' );
+				const instructions = document.getElementById( 'instructions' );
+
+				instructions.addEventListener( 'click',  () => {
+
+					this.controls.lock();
+
+				});
+
+				this.controls.addEventListener( 'lock', () => {
+
+					instructions.style.display = 'none';
+					blocker.style.display = 'none';
+
+				} );
+
+				this.controls.addEventListener( 'unlock', () => {
+
+					blocker.style.display = 'block';
+					instructions.style.display = '';
+
+				} );
+
+    }
+    console.log(this.controls)
+    this.started = true
   }
 
   addLights() {
@@ -110,7 +146,8 @@ class Room {
   }
 
   onMouseDown(_event) {
-    console.log('doinks')
+    if(!this.controls.isLocked) return
+
     if(this.intersects.length > 0) {
       if(this.intersected) {
         console.log(window.origin)
@@ -121,42 +158,68 @@ class Room {
   }
 
   addObject() {
-    this.box1 = new THREE.Group()
-    this.boxgeo = new THREE.BoxBufferGeometry(1, 1, 1)
-    this.boxmat = new THREE.MeshLambertMaterial({
+    this.geo = new THREE.IcosahedronBufferGeometry(1, 0)
+    this.mat = new THREE.MeshLambertMaterial({
       color: Math.random() * 0xffffff
     })
 
-    this.boxmesh = new THREE.Mesh(this.boxgeo, this.boxmat)
-    this.boxmesh.userData = '/face.html'
-    this.boxmesh.position.z = -3
-    this.castable.push(this.boxmesh)
-    this.scene.add(this.boxmesh)
+    this.boxmesh = new THREE.Mesh(this.geo, this.mat)
+    // this.boxmesh.userData = '/face.html'
+    // this.boxmesh.position.z = -3
 
-    this.hoverGeo = new THREE.BoxBufferGeometry(1.2, 1.2, 1.2)
-    this.hoverMat = new THREE.MeshBasicMaterial({
+    // this.castable.push(this.boxmesh)
+    // this.scene.add(this.boxmesh)
+
+    for(let i = 0; i < 3; i++){
+      const box = this.boxmesh.clone()
+      box.material = new THREE.MeshLambertMaterial({
+        color: Math.random() * 0xffffff
+      })
+      this.castable.push(box)
+      this.scene.add(box)
+    }
+
+
+    this.castable[0].position.set(-8, 0, 5)
+    this.castable[0].userData = '/'
+
+    this.castable[1].position.set(0, 0, -3)
+    this.castable[1].userData = '/face.html'
+
+    this.castable[2].position.set(8, 0, 5)
+    this.castable[2].userData = '/double.html'
+
+
+    this.highlight = new THREE.Mesh(this.geo, new THREE.MeshBasicMaterial({
       color: 0xffffff,
-      side: THREE.BackSide,
-      transparent: true,
-      opacity: 0.4
-    })
-    this.hoverMesh = new THREE.Mesh(this.hoverGeo, this.hoverMat)
-    this.hoverMesh.position.copy(this.boxmesh.position)
+      side: THREE.BackSide
+    }))
+    // this.highlight.scale.set(1.2, 1.2, 1.2)
+    // this.scene.add(this.highlight)
 
-    this.box1.add(this.boxmesh, this.hoverMesh)
 
-    this.scene.add(this.box1)
+
+    // this.scene.add(this.boxmesh)
 
   }
-
-
 
   render() {
     this.time += 0.01;
 
+    if(this.controls.isLocked) {
     this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
-
     this.intersects = this.raycaster.intersectObjects( this.castable );
+    document.body.style.cursor = 'pointer'
+
+    this.castable.forEach(i => {
+      i.rotation.x = this.time
+      i.rotation.z = this.time
+    })
+
+    this.boxmesh.rotation.x = this.time;
+    this.boxmesh.rotation.z = this.time;
+    // this.highlight.rotation.x = this.time;
+    // this.highlight.rotation.z = this.time;
 
     if ( this.intersects.length > 0 ) {
 
@@ -165,6 +228,12 @@ class Room {
         if ( this.intersected ) this.intersected.material.emissive.setHex( this.intersected.currentHex );
 
         this.intersected = this.intersects[ 0 ].object;
+        this.intersected.add(this.highlight);
+        // this.intersected.rotation.x = this.time
+        // this.intersected.rotation.z = this.time
+        // this.highlight.rotation.copy(this.intersected.rotation)
+        // this.highlight.visible = true;
+        this.highlight.scale.set(1.2, 1.2, 1.2)
         this.intersected.currentHex = this.intersected.material.emissive.getHex();
         this.intersected.material.emissive.setHex( 0xff0000 );
 
@@ -175,18 +244,15 @@ class Room {
       if ( this.intersected ) this.intersected.material.emissive.setHex( this.intersected.currentHex );
 
       this.intersected = null;
-
+      this.highlight.scale.set(1, 1, 1)
+      document.body.style.cursor = 'default'
     }
 
-    this.boxmesh.rotation.x = this.time;
-    this.boxmesh.rotation.z = this.time;
-
-    this.hoverMesh.rotation.x = this.boxmesh.rotation.x
-    this.hoverMesh.rotation.z = this.boxmesh.rotation.z
+  }
 
 
     requestAnimationFrame(this.render.bind(this))
-    this.controls.update();
+    // this.controls.update();
     this.renderer.render(this.scene, this.camera)
   }
 }
