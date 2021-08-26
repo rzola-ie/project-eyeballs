@@ -48,8 +48,6 @@ class Room {
       if(_event.rotationRate.alpha || _event.rotationRate.beta || _event.rotationRate.gamma) {
         this.gyroPresent = true
         this.gyro.innerText = `the gyro? ${this.gyroPresent}`
-        this.blocker.style.display = 'none'
-        this.instructions.style.display = 'none'
       }
     })
   }
@@ -82,6 +80,11 @@ class Room {
     this.renderer.setSize( this.width, this.height );
     this.container.appendChild(this.renderer.domElement)
 
+    if(this.isMobile) {
+      this.blocker.style.display = 'none'
+        this.instructions.style.display = 'none'
+    }
+
 
     this.checkForGyro()
     this.addControls()
@@ -97,7 +100,7 @@ class Room {
   addControls() {
 
     // set the controls
-    if(this.gyroPresent) {
+    if(this.isMobile) {
       // orientation controls
       this.controls = new DeviceOrientationControls( this.camera );
     } else {
@@ -208,7 +211,7 @@ class Room {
   render() {
     this.time += 0.01;
 
-    if(this.controls.isLocked || this.gyroPresent) {
+    if(this.controls.isLocked) {
     this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
     this.intersects = this.raycaster.intersectObjects( this.castable );
     document.body.style.cursor = 'pointer'
