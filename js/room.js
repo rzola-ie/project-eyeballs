@@ -106,6 +106,11 @@ class Room {
 					this.controls.lock();
 
 				});
+				instructions.addEventListener( 'touchstart',  () => {
+
+					this.controls.lock();
+
+				});
 
 				this.controls.addEventListener( 'lock', () => {
 
