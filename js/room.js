@@ -80,7 +80,6 @@ class Room {
     ctx.arc(50, 50, 40, 0, 2*Math.PI)
     ctx.stroke()
 
-
     document.body.appendChild(canvas)
 
     
@@ -124,35 +123,27 @@ class Room {
     // set the controls
     if(this.isMobile) {
       // orientation controls
+      alert('the mobilening')
       this.controls = new DeviceOrientationControls( this.camera );
-
     } 
     else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
       this.controls.lock()
 
       instructions.addEventListener( 'click',  () => {
-
         this.controls.lock();
-
       });
 
       this.controls.addEventListener( 'lock', () => {
-        
         instructions.style.display = 'none';
         blocker.style.display = 'none';
-
-      } );
+      });
 
       this.controls.addEventListener( 'unlock', () => {
-
         blocker.style.display = 'block';
         instructions.style.display = '';
-
-      } );
-
+      });
     }
-
   }
 
   addLights() {
