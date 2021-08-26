@@ -16,6 +16,7 @@ class Room {
     this.time = 0;
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
+    this.intersects = []
     this.intersected = null;
     this.castable = []
 
@@ -28,8 +29,8 @@ class Room {
     this.gyro.innerText = `the gyro? ${this.gyroPresent}`
 
     this.blocker.addEventListener('click', () => {
-      this.blocker.remove()
-      this.instructions.remove()
+      this.blocker.style.display = 'none'
+      this.instructions.style.display = 'none'
       this.addControls()
     })
     
@@ -62,6 +63,27 @@ class Room {
     // set the camera
     this.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 1, 1100 );
     this.camera.position.z = 5
+
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    canvas.width = 100
+    canvas.height = 100
+    canvas.style.height = '30px'
+    canvas.style.width = '30px'
+    canvas.style.position = 'absolute'
+    canvas.style.top = '50%'
+    canvas.style.left = '50%'
+    canvas.style.transform = 'translate(-50%, -50%)'
+
+    ctx.strokeStyle = '#ffffff'
+    ctx.lineWidth = 12
+    ctx.arc(50, 50, 40, 0, 2*Math.PI)
+    ctx.stroke()
+
+
+    document.body.appendChild(canvas)
+
+    
 
     // set the room
     this.geometry = new THREE.SphereGeometry( 500, 60, 40 );
@@ -100,36 +122,36 @@ class Room {
   addControls() {
 
     // set the controls
-    // if(this.isMobile) {
+    if(this.isMobile) {
       // orientation controls
       this.controls = new DeviceOrientationControls( this.camera );
 
-    // } 
-    // else {
-    //   this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
+    } 
+    else {
+      this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
+      this.controls.lock()
 
+      instructions.addEventListener( 'click',  () => {
 
-    //   instructions.addEventListener( 'click',  () => {
+        this.controls.lock();
 
-    //     this.controls.lock();
+      });
 
-    //   });
+      this.controls.addEventListener( 'lock', () => {
+        
+        instructions.style.display = 'none';
+        blocker.style.display = 'none';
 
-    //   this.controls.addEventListener( 'lock', () => {
+      } );
 
-    //     instructions.style.display = 'none';
-    //     blocker.style.display = 'none';
+      this.controls.addEventListener( 'unlock', () => {
 
-    //   } );
+        blocker.style.display = 'block';
+        instructions.style.display = '';
 
-    //   this.controls.addEventListener( 'unlock', () => {
+      } );
 
-    //     blocker.style.display = 'block';
-    //     instructions.style.display = '';
-
-    //   } );
-
-    // }
+    }
 
   }
 
@@ -153,7 +175,7 @@ class Room {
   }
 
   onMouseDown(_event) {
-    if(!this.controls.isLocked) return
+    if(this.controls && !this.controls.isLocked) return
 
     if(this.intersects.length > 0) {
       if(this.intersected) {
@@ -213,7 +235,8 @@ class Room {
   render() {
     this.time += 0.01;
 
-    // if(this.controls.isLocked) {
+    if(this.controls && this.controls.isLocked) {
+      // this.controls.update();
     this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
     this.intersects = this.raycaster.intersectObjects( this.castable );
     document.body.style.cursor = 'pointer'
@@ -255,11 +278,11 @@ class Room {
       document.body.style.cursor = 'default'
     }
 
-  // }
+  }
 
 
     requestAnimationFrame(this.render.bind(this))
-    this.controls.update();
+    
     this.renderer.render(this.scene, this.camera)
   }
 }
