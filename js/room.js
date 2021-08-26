@@ -21,6 +21,7 @@ class Room {
     this.castable = []
 
     this.gyroPresent = false
+    this.started = false
     this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     this.blocker = document.getElementById( 'blocker' );
@@ -125,6 +126,7 @@ class Room {
       // orientation controls
       alert('the mobilening')
       this.controls = new DeviceOrientationControls( this.camera );
+      this.started = true
     } 
     else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
@@ -137,13 +139,17 @@ class Room {
       this.controls.addEventListener( 'lock', () => {
         instructions.style.display = 'none';
         blocker.style.display = 'none';
+        this.started = true
       });
 
       this.controls.addEventListener( 'unlock', () => {
         blocker.style.display = 'block';
         instructions.style.display = '';
+        this.started = false
       });
     }
+
+
   }
 
   addLights() {
@@ -227,7 +233,6 @@ class Room {
     this.time += 0.01;
 
     if(this.controls && this.controls.isLocked) {
-      // this.controls.update();
     this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
     this.intersects = this.raycaster.intersectObjects( this.castable );
     document.body.style.cursor = 'pointer'
@@ -270,6 +275,8 @@ class Room {
     }
 
   }
+
+    if(this.isMobile && this.started) this.controls.update()
 
 
     requestAnimationFrame(this.render.bind(this))
