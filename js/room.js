@@ -30,6 +30,7 @@ class Room {
     this.blocker.addEventListener('click', () => {
       this.blocker.remove()
       this.instructions.remove()
+      this.addControls()
     })
     
     this.init();
@@ -87,7 +88,6 @@ class Room {
 
 
     this.checkForGyro()
-    this.addControls()
     this.addLights()
     this.setupMouseMove()
     this.setupMouseClick()
