@@ -26,6 +26,11 @@ class Room {
     this.instructions = document.getElementById( 'instructions' );
     this.gyro = document.getElementById( 'gyro' );
     this.gyro.innerText = `the gyro? ${this.gyroPresent}`
+
+    this.blocker.addEventListener('click', () => {
+      this.blocker.remove()
+      this.instructions.remove()
+    })
     
     this.init();
 
@@ -80,11 +85,6 @@ class Room {
     this.renderer.setSize( this.width, this.height );
     this.container.appendChild(this.renderer.domElement)
 
-    if(this.isMobile) {
-      this.blocker.style.display = 'none'
-        this.instructions.style.display = 'none'
-    }
-
 
     this.checkForGyro()
     this.addControls()
@@ -100,35 +100,36 @@ class Room {
   addControls() {
 
     // set the controls
-    if(this.isMobile) {
+    // if(this.isMobile) {
       // orientation controls
       this.controls = new DeviceOrientationControls( this.camera );
-      this.controls.isLocked = true
-    } else {
-      this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
+
+    // } 
+    // else {
+    //   this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
 
 
-      instructions.addEventListener( 'click',  () => {
+    //   instructions.addEventListener( 'click',  () => {
 
-        this.controls.lock();
+    //     this.controls.lock();
 
-      });
+    //   });
 
-      this.controls.addEventListener( 'lock', () => {
+    //   this.controls.addEventListener( 'lock', () => {
 
-        instructions.style.display = 'none';
-        blocker.style.display = 'none';
+    //     instructions.style.display = 'none';
+    //     blocker.style.display = 'none';
 
-      } );
+    //   } );
 
-      this.controls.addEventListener( 'unlock', () => {
+    //   this.controls.addEventListener( 'unlock', () => {
 
-        blocker.style.display = 'block';
-        instructions.style.display = '';
+    //     blocker.style.display = 'block';
+    //     instructions.style.display = '';
 
-      } );
+    //   } );
 
-    }
+    // }
 
   }
 
@@ -212,7 +213,7 @@ class Room {
   render() {
     this.time += 0.01;
 
-    if(this.controls.isLocked) {
+    // if(this.controls.isLocked) {
     this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
     this.intersects = this.raycaster.intersectObjects( this.castable );
     document.body.style.cursor = 'pointer'
@@ -254,11 +255,11 @@ class Room {
       document.body.style.cursor = 'default'
     }
 
-  }
+  // }
 
 
     requestAnimationFrame(this.render.bind(this))
-    if(this.isMobile) this.controls.update();
+    this.controls.update();
     this.renderer.render(this.scene, this.camera)
   }
 }
