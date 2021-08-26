@@ -172,7 +172,7 @@ class Room {
   }
 
   onMouseDown(_event) {
-    if(this.controls && !this.controls.isLocked) return
+    if(this.controls && !this.controls.isLocked || !this.started) return
 
     if(this.intersects.length > 0) {
       if(this.intersected) {
@@ -255,10 +255,6 @@ class Room {
 
         this.intersected = this.intersects[ 0 ].object;
         this.intersected.add(this.highlight);
-        // this.intersected.rotation.x = this.time
-        // this.intersected.rotation.z = this.time
-        // this.highlight.rotation.copy(this.intersected.rotation)
-        // this.highlight.visible = true;
         this.highlight.scale.set(1.2, 1.2, 1.2)
         this.intersected.currentHex = this.intersected.material.emissive.getHex();
         this.intersected.material.emissive.setHex( 0xff0000 );
