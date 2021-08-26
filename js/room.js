@@ -2,7 +2,6 @@ import '../css/style.css'
 import * as THREE from 'three'
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import room from '../static/assets/room.jpg';
 
@@ -98,16 +97,17 @@ class Room {
 
     } else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
-      	const blocker = document.getElementById( 'blocker' );
-				const instructions = document.getElementById( 'instructions' );
+      const blocker = document.getElementById( 'blocker' );
+      const instructions = document.getElementById( 'instructions' );
 
 				instructions.addEventListener( 'click',  () => {
-
+alert('bro')
 					this.controls.lock();
 
 				});
-				instructions.addEventListener( 'touchstart',  () => {
 
+				instructions.addEventListener( 'touchstart',  () => {
+          alert('bro')
 					this.controls.lock();
 
 				});
