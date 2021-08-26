@@ -25,7 +25,7 @@ class Room {
     this.blocker = document.getElementById( 'blocker' );
     this.instructions = document.getElementById( 'instructions' );
     this.gyro = document.getElementById( 'gyro' );
-    
+    this.gyro.innerText = `the gyro? ${this.gyroPresent}`
     
     this.init();
 
