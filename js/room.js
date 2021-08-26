@@ -88,6 +88,7 @@ class Room {
   addControls() {
     const blocker = document.getElementById( 'blocker' );
     const instructions = document.getElementById( 'instructions' );
+
     // set the controls
     if(this.gyroPresent) {
       // orientation controls
@@ -99,25 +100,25 @@ class Room {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
 
 
-				instructions.addEventListener( 'click',  () => {
+      instructions.addEventListener( 'click',  () => {
 
-					this.controls.lock();
+        this.controls.lock();
 
-				});
+      });
 
-				this.controls.addEventListener( 'lock', () => {
+      this.controls.addEventListener( 'lock', () => {
 
-					instructions.style.display = 'none';
-					blocker.style.display = 'none';
+        instructions.style.display = 'none';
+        blocker.style.display = 'none';
 
-				} );
+      } );
 
-				this.controls.addEventListener( 'unlock', () => {
+      this.controls.addEventListener( 'unlock', () => {
 
-					blocker.style.display = 'block';
-					instructions.style.display = '';
+        blocker.style.display = 'block';
+        instructions.style.display = '';
 
-				} );
+      } );
 
     }
 
@@ -203,7 +204,7 @@ class Room {
   render() {
     this.time += 0.01;
 
-    if(this.controls.isLocked) {
+    if(this.controls.isLocked || this.gyroPresent) {
     this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
     this.intersects = this.raycaster.intersectObjects( this.castable );
     document.body.style.cursor = 'pointer'
