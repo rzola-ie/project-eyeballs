@@ -24,6 +24,8 @@ class Room {
 
     this.blocker = document.getElementById( 'blocker' );
     this.instructions = document.getElementById( 'instructions' );
+    this.gyro = document.getElementById( 'gyro' );
+    
     
     this.init();
 
@@ -45,6 +47,9 @@ class Room {
     window.addEventListener('devicemotion', _event => {
       if(_event.rotationRate.alpha || _event.rotationRate.beta || _event.rotationRate.gamma) {
         this.gyroPresent = true
+        this.gyro.innerText = `the gyro? ${this.gyroPresent}`
+        this.blocker.style.display = 'none'
+        this.instructions.style.display = 'none'
       }
     })
   }
@@ -90,10 +95,6 @@ class Room {
   }
 
   addControls() {
-    if(this.isMobile) {
-      this.blocker.style.display = 'none'
-      this.instructions.style.display = 'none'
-    }
 
     // set the controls
     if(this.gyroPresent) {
