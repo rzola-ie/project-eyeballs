@@ -258,7 +258,7 @@ class Room {
 
 
     requestAnimationFrame(this.render.bind(this))
-    // this.controls.update();
+    if(this.isMobile) this.controls.update();
     this.renderer.render(this.scene, this.camera)
   }
 }
