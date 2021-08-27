@@ -110,9 +110,10 @@ class Room {
     // set the controls
     if (this.isMobile) {
       // orientation controls
-      alert('the mobilening')
+
       this.controls = new DeviceOrientationControls(this.camera);
       this.started = true
+      this.crosshairCanvas.style.display = ''
     }
     else {
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
@@ -180,7 +181,10 @@ class Room {
   }
 
   onMouseDown(_event) {
+    // alert('it works')
     if (this.controls && !this.controls.isLocked || !this.started) return
+
+    alert('didnt return')
 
     if (this.intersects.length > 0) {
       if (this.intersected) {
