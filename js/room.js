@@ -48,7 +48,11 @@ class Room {
   }
 
   setupMouseClick() {
-    window.addEventListener('pointerdown', this.onMouseDown.bind(this))
+    if (this.isMobile) {
+      window.addEventListener('touchstart', this.onMouseDown.bind(this))
+    } else {
+      window.addEventListener('pointerdown', this.onMouseDown.bind(this))
+    }
   }
 
   checkForGyro() {
