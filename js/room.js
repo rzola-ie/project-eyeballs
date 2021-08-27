@@ -49,7 +49,7 @@ class Room {
 
   setupMouseClick() {
     if (this.isMobile) {
-      window.addEventListener('touchend', this.onMouseDown.bind(this))
+      window.addEventListener('touchend', this.onTouchEnd.bind(this))
     } else {
       window.addEventListener('pointerdown', this.onMouseDown.bind(this))
     }
@@ -186,11 +186,30 @@ class Room {
     this.mouse.y = - (_event.clientY / this.height) * 2 + 1
   }
 
+  onTouchEnd(_event) {
+    this.mouse.x = e.touches[0].clientX;
+    this.mouse.y = e.touches[0].clientY;
+    console.log(Page)
+    // alert('it works')
+    if (!this.started) return
+
+
+
+    if (this.intersects.length > 0) {
+      if (this.intersected) {
+        console.log(window.origin)
+        console.log(this.intersected.userData)
+        window.location.href = window.origin + this.intersected.userData
+      }
+    }
+  }
+
   onMouseDown(_event) {
+
     // alert('it works')
     if (this.controls && !this.controls.isLocked || !this.started) return
 
-    alert('didnt return')
+
 
     if (this.intersects.length > 0) {
       if (this.intersected) {
