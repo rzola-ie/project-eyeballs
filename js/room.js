@@ -187,12 +187,12 @@ class Room {
   }
 
   onTouchEnd(_event) {
-    alert('asshole')
     this.mouse.x = e.touches[0].clientX;
     this.mouse.y = e.touches[0].clientY;
     const tappy = document.getElementById('tappy')
     tappy.innerText = `x: ${this.mouse.x}, y: ${this.mouse.y}`
-    console.log(Page)
+    alert('asshole')
+
     // alert('it works')
     if (!this.started) return
 
