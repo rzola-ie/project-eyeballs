@@ -154,6 +154,8 @@ class Room {
     this.crosshairCanvas.style.position = 'absolute'
     this.crosshairCanvas.style.top = '50%'
     this.crosshairCanvas.style.left = '50%'
+    this.crosshairCanvas.style.userSelect = 'none'
+    this.crosshairCanvas.style.pointerEvents = 'none'
     this.crosshairCanvas.style.transform = 'translate(-50%, -50%)'
     this.crosshairCanvas.setAttribute('id', 'crosshair')
 
