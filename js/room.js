@@ -66,7 +66,7 @@ class Room {
     } else {
       this.gyroPresent = false
     }
-    this.gyroStatus.innerText = `acceleromete present: ${this.gyroPresent}`
+    this.gyroStatus.innerText = `accelerometer present: ${this.gyroPresent}`
     window.removeEventListener('devicemotion', this.setGyroStatus.bind(this))
   }
 
@@ -187,8 +187,8 @@ class Room {
   }
 
   onTouchEnd(_event) {
-    this.mouse.x = e.touches[0].clientX;
-    this.mouse.y = e.touches[0].clientY;
+    this.mouse.x = _event.touches[0].clientX;
+    this.mouse.y = _event.touches[0].clientY;
     const tappy = document.getElementById('tappy')
     tappy.innerText = `x: ${this.mouse.x}, y: ${this.mouse.y}`
     alert('asshole')
