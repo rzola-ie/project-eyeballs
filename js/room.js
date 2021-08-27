@@ -49,7 +49,7 @@ class Room {
 
   setupMouseClick() {
     if (this.isMobile) {
-      window.addEventListener('touchstart', this.onMouseDown.bind(this))
+      window.addEventListener('touchend', this.onMouseDown.bind(this))
     } else {
       window.addEventListener('pointerdown', this.onMouseDown.bind(this))
     }
