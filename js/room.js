@@ -44,6 +44,8 @@ class Room {
   }
 
   setupMouseMove() {
+    if (this.isMobile) return
+
     window.addEventListener('mousemove', this.onMouseMove.bind(this))
   }
 
@@ -187,11 +189,11 @@ class Room {
   }
 
   onTouchEnd(_event) {
-    this.mouse.x = _event.touches[0].clientX;
-    this.mouse.y = _event.touches[0].clientY;
+    this.mouse.x = _event.changedTouches[0].clientX;
+    this.mouse.y = _event.changedTouches[0].clientY;
     const tappy = document.getElementById('tappy')
+
     tappy.innerText = `x: ${this.mouse.x}, y: ${this.mouse.y}`
-    alert('asshole')
 
     // alert('it works')
     if (!this.started) return
@@ -208,8 +210,6 @@ class Room {
   }
 
   onMouseDown(_event) {
-
-    // alert('it works')
     if (this.controls && !this.controls.isLocked || !this.started) return
 
 
