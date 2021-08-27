@@ -187,6 +187,7 @@ class Room {
   }
 
   onTouchEnd(_event) {
+    alert('asshole')
     this.mouse.x = e.touches[0].clientX;
     this.mouse.y = e.touches[0].clientY;
     const tappy = document.getElementById('tappy')
