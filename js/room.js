@@ -345,8 +345,8 @@ class Room {
 
         if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
 
+        if (this.home) this.home.highlight.scale.set(0, 0, 0)
         this.intersected = null;
-        this.home.highlight.scale.set(0, 0, 0)
         document.body.style.cursor = 'default'
       }
 
