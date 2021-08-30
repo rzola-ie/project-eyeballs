@@ -101,7 +101,7 @@ class Room {
       console.log(gltf)
       // gltf.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
       this.scene.add(gltf.scene)
-      gltf.scene.position.set(4, -2, 12)
+      gltf.scene.position.set(1, -2, 12)
       gltf.scene.rotation.y = - Math.PI * 0.5
     })
 
@@ -239,6 +239,7 @@ class Room {
       console.log(gltf)
       this.home = {}
       this.home.instance = gltf.scene.children[0]
+      this.home.instance.position.z = -1
       this.home.instance.scale.set(0.3, 0.3, 0.3)
       this.home.instance.material = new THREE.MeshLambertMaterial({ color: 0xffffff })
       this.home.instance.userData = {
@@ -260,7 +261,7 @@ class Room {
       color: Math.random() * 0xffffff
     })
 
-    this.boxmesh = new THREE.Mesh(this.geo, this.mat)
+    this.mesh = new THREE.Mesh(this.geo, this.mat)
 
     // this.hemi = new THREE.HemisphereLight()
     // this.scene.add(this.hemi)
@@ -319,8 +320,8 @@ class Room {
         i.rotation.y = Math.sin(this.time);
       })
 
-      this.boxmesh.rotation.x = this.time;
-      this.boxmesh.rotation.z = this.time;
+      this.mesh.rotation.x = this.time;
+      this.mesh.rotation.z = this.time;
       // this.home.rotation.y = Math.sin(this.time);
       // this.highlight.rotation.x = this.time;
       // this.highlight.rotation.z = this.time;
@@ -335,9 +336,9 @@ class Room {
           this.intersected.add(this.home.highlight);
           // this.highlight.geometry.copy(this.intersected.geometry)
           // this.highlight.material.side = THREE.BackSide
-          this.home.highlight.scale.set(1.2, 1.2, 1.2)
+          this.home.highlight.scale.set(1.1, 1.1, 1.1)
           this.intersected.currentHex = this.intersected.material.emissive.getHex();
-          this.intersected.material.emissive.setHex(0xff0000);
+          this.intersected.material.emissive.setHex(0x966CE0);
 
         }
 
