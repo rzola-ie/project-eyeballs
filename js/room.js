@@ -2,6 +2,7 @@ import '../css/style.css'
 import * as THREE from 'three'
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import room from '../static/assets/room.jpg';
 
@@ -27,6 +28,8 @@ class Room {
     this.blocker = document.getElementById('blocker');
     this.instructions = document.getElementById('instructions');
     this.gyroStatus = document.getElementById('gyro');
+
+    this.loader = new GLTFLoader()
 
 
     this.blocker.addEventListener('click', () => {
@@ -78,21 +81,29 @@ class Room {
     this.camera.position.z = 5
 
     // set the room
-    this.geometry = new THREE.SphereGeometry(500, 60, 40);
+    // this.geometry = new THREE.SphereGeometry(500, 60, 40);
     // invert the geometry on the x-axis so that all of the faces point inward
-    this.geometry.scale(- 1, 1, 1);
+    // this.geometry.scale(- 1, 1, 1);
 
-    this.material = new THREE.MeshBasicMaterial({
-      map: new THREE.TextureLoader().load(room)
-    });
+    // this.material = new THREE.MeshBasicMaterial({
+    //   map: new THREE.TextureLoader().load(room)
+    // });
 
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.mesh);
+    // this.mesh = new THREE.Mesh(this.geometry, this.material);
+    // this.scene.add(this.mesh);
 
     // set the helper
-    this.helperGeometry = new THREE.BoxGeometry(100, 100, 100, 4, 4, 4);
-    this.helperMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
-    this.helper = new THREE.Mesh(this.helperGeometry, this.helperMaterial);
+    // this.helperGeometry = new THREE.BoxGeometry(100, 100, 100, 4, 4, 4);
+    // this.helperMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
+    // this.helper = new THREE.Mesh(this.helperGeometry, this.helperMaterial);
+
+    this.loader.load('/models/office.glb', gltf => {
+      console.log(gltf)
+      // gltf.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
+      this.scene.add(gltf.scene)
+      gltf.scene.position.set(4, -2, 12)
+      gltf.scene.rotation.y = - Math.PI * 0.5
+    })
 
     // set the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -224,36 +235,62 @@ class Room {
   }
 
   addObject() {
+    this.loader.load('/models/home.glb', gltf => {
+      console.log(gltf)
+      this.home = {}
+      this.home.instance = gltf.scene.children[0]
+      this.home.instance.scale.set(0.3, 0.3, 0.3)
+      this.home.instance.material = new THREE.MeshLambertMaterial({ color: 0xffffff })
+      this.home.instance.userData = {
+        name: 'home',
+        href: '/'
+      }
+
+      this.home.highlight = gltf.scene.children[1]
+      this.home.highlight.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+      this.home.highlight.material.side = THREE.BackSide
+
+
+      this.castable.push(this.home.instance)
+      this.scene.add(this.home.instance)
+    })
+
     this.geo = new THREE.IcosahedronBufferGeometry(1, 0)
     this.mat = new THREE.MeshLambertMaterial({
       color: Math.random() * 0xffffff
     })
 
     this.boxmesh = new THREE.Mesh(this.geo, this.mat)
+
+    // this.hemi = new THREE.HemisphereLight()
+    // this.scene.add(this.hemi)
+    const light = new THREE.PointLight(0x008EC4)
+    this.scene.add(light)
     // this.boxmesh.userData = '/face.html'
     // this.boxmesh.position.z = -3
 
     // this.castable.push(this.boxmesh)
     // this.scene.add(this.boxmesh)
 
-    for (let i = 0; i < 3; i++) {
-      const box = this.boxmesh.clone()
-      box.material = new THREE.MeshLambertMaterial({
-        color: Math.random() * 0xffffff
-      })
-      this.castable.push(box)
-      this.scene.add(box)
-    }
+    // for (let i = 0; i < 3; i++) {
+    //   const box = this.boxmesh.clone()
+    //   box.material = new THREE.MeshLambertMaterial({
+    //     color: Math.random() * 0xffffff
+    //   })
+    //   this.castable.push(box)
+    //   this.scene.add(box)
+    // }
 
 
-    this.castable[0].position.set(-8, 0, 5)
-    this.castable[0].userData = '/'
+    // this.castable[0].position.set(-8, 0, 5)
+    // this.castable[0].userData = '/'
 
-    this.castable[1].position.set(0, 0, -3)
-    this.castable[1].userData = '/face.html'
+    // this.castable[1].visible = false
+    // this.castable[1].position.set(0, 0, -3)
+    // this.castable[1].userData = '/face.html'
 
-    this.castable[2].position.set(8, 0, 5)
-    this.castable[2].userData = '/double.html'
+    // this.castable[2].position.set(8, 0, 5)
+    // this.castable[2].userData = '/double.html'
 
 
     this.highlight = new THREE.Mesh(this.geo, new THREE.MeshBasicMaterial({
@@ -278,12 +315,13 @@ class Room {
       document.body.style.cursor = 'pointer'
 
       this.castable.forEach(i => {
-        i.rotation.x = this.time
-        i.rotation.z = this.time
+
+        i.rotation.y = Math.sin(this.time);
       })
 
       this.boxmesh.rotation.x = this.time;
       this.boxmesh.rotation.z = this.time;
+      // this.home.rotation.y = Math.sin(this.time);
       // this.highlight.rotation.x = this.time;
       // this.highlight.rotation.z = this.time;
 
@@ -294,8 +332,10 @@ class Room {
           if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
 
           this.intersected = this.intersects[0].object;
-          this.intersected.add(this.highlight);
-          this.highlight.scale.set(1.2, 1.2, 1.2)
+          this.intersected.add(this.home.highlight);
+          // this.highlight.geometry.copy(this.intersected.geometry)
+          // this.highlight.material.side = THREE.BackSide
+          this.home.highlight.scale.set(1.2, 1.2, 1.2)
           this.intersected.currentHex = this.intersected.material.emissive.getHex();
           this.intersected.material.emissive.setHex(0xff0000);
 
@@ -306,7 +346,7 @@ class Room {
         if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
 
         this.intersected = null;
-        this.highlight.scale.set(1, 1, 1)
+        this.home.highlight.scale.set(0, 0, 0)
         document.body.style.cursor = 'default'
       }
 
