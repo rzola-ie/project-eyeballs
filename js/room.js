@@ -311,6 +311,8 @@ class Room {
   render() {
     this.time += 0.01;
 
+    this.camera.position.y += this.time * 0.001;
+
     if (this.controls && this.controls.isLocked || this.isMobile) {
       this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
       this.intersects = this.raycaster.intersectObjects(this.castable);
