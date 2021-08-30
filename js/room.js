@@ -267,14 +267,15 @@ class Room {
     // this.scene.add(this.hemi)
     const light = new THREE.PointLight(0x008EC4)
     this.scene.add(light)
-    // this.boxmesh.userData = '/face.html'
-    // this.boxmesh.position.z = -3
 
-    // this.castable.push(this.boxmesh)
-    // this.scene.add(this.boxmesh)
+    // this.mesh.userData = '/face.html'
+    // this.mesh.position.z = -3
+
+    // this.castable.push(this.mesh)
+    // this.scene.add(this.mesh)
 
     // for (let i = 0; i < 3; i++) {
-    //   const box = this.boxmesh.clone()
+    //   const box = this.mesh.clone()
     //   box.material = new THREE.MeshLambertMaterial({
     //     color: Math.random() * 0xffffff
     //   })
