@@ -31,12 +31,18 @@ canvas {
 }
 
 #container, 
-#container-room,
 #container-face,
 #container-double {
   height: 100vh;
   min-height: 100vh;
   min-height: -webkit-fill-available;
+  width: 100vw;
+  background: #111;
+}
+
+#container-room {
+  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background: #111;
 }
