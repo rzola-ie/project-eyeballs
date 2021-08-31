@@ -214,7 +214,7 @@ class Room {
       if (this.intersected) {
         console.log(window.origin)
         console.log(this.intersected.userData)
-        // window.location.href = window.origin + this.intersected.userData.href
+        window.location.href = window.origin + this.intersected.userData.href
       }
     }
   }
