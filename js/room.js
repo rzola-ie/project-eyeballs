@@ -310,7 +310,7 @@ class Room {
       )
     })
 
-    const light = new THREE.PointLight(0x008EC4)
+    const light = new THREE.PointLight(0xFFF0C9)
     this.scene.add(light)
   }
 
