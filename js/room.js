@@ -14,6 +14,8 @@ class Room {
     this.width = this.container.offsetWidth
     this.height = this.container.offsetWidth
 
+    this.debugMode = window.location.hash === '#debug'
+
     this.time = 0;
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -47,13 +49,13 @@ class Room {
   }
 
   setupMouseMove() {
-    if (this.isMobile) return
+    if (this.isMobile && !this.debugMode) return
 
     window.addEventListener('mousemove', this.onMouseMove.bind(this))
   }
 
   setupMouseClick() {
-    if (this.isMobile) {
+    if (this.isMobile && !this.debugMode) {
       window.addEventListener('touchend', this.onTouchEnd.bind(this))
     } else {
       window.addEventListener('pointerdown', this.onMouseDown.bind(this))
@@ -77,28 +79,12 @@ class Room {
 
   init() {
     // set the camera
-    this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1100);
+    this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
     this.camera.position.z = 5
-
-    // set the room
-    // this.geometry = new THREE.SphereGeometry(500, 60, 40);
-    // invert the geometry on the x-axis so that all of the faces point inward
-    // this.geometry.scale(- 1, 1, 1);
-
-    // this.material = new THREE.MeshBasicMaterial({
-    //   map: new THREE.TextureLoader().load(room)
-    // });
-
-    // this.mesh = new THREE.Mesh(this.geometry, this.material);
-    // this.scene.add(this.mesh);
-
-    // set the helper
-    // this.helperGeometry = new THREE.BoxGeometry(100, 100, 100, 4, 4, 4);
-    // this.helperMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
-    // this.helper = new THREE.Mesh(this.helperGeometry, this.helperMaterial);
+    // this.camera.position.x = 5
 
     this.loader.load('/models/office.glb', gltf => {
-      console.log(gltf)
+      // console.log(gltf)
       // gltf.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
       this.scene.add(gltf.scene)
       gltf.scene.position.set(1, -2, 12)
@@ -125,7 +111,7 @@ class Room {
 
   addControls() {
     // set the controls
-    if (this.isMobile) {
+    if (this.isMobile && !this.debugMode) {
       // orientation controls
 
       this.controls = new DeviceOrientationControls(this.camera);
@@ -133,6 +119,7 @@ class Room {
       this.crosshairCanvas.style.display = ''
     }
     else {
+
       this.controls = new PointerLockControls(this.camera, this.renderer.domElement)
       this.controls.lock()
 
@@ -223,111 +210,120 @@ class Room {
   onMouseDown(_event) {
     if (this.controls && !this.controls.isLocked || !this.started) return
 
-
-
     if (this.intersects.length > 0) {
       if (this.intersected) {
         console.log(window.origin)
         console.log(this.intersected.userData)
-        window.location.href = window.origin + this.intersected.userData.href
+        // window.location.href = window.origin + this.intersected.userData.href
       }
     }
   }
 
   addObject() {
     this.loader.load('/models/home.glb', gltf => {
-      console.log(gltf)
-      this.home = {}
-      this.home.instance = gltf.scene.children[0]
-      this.home.instance.position.z = -1
-      this.home.instance.scale.set(0.3, 0.3, 0.3)
-      this.home.instance.material = new THREE.MeshLambertMaterial({ color: 0xffffff })
-      this.home.instance.userData = {
-        name: 'home',
-        href: '/'
+      // console.log(gltf)
+
+      // color loss
+      this.color = {}
+      this.color.instance = gltf.scene.children[0]
+      this.color.instance.position.z = 0.5
+      this.color.instance.position.x = -3
+      this.color.instance.scale.set(0.2, 0.2, 0.2)
+      this.color.instance.userData = {
+        name: 'color',
+        href: '/color.html'
       }
 
-      this.home.highlight = gltf.scene.children[1]
-      this.home.highlight.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-      this.home.highlight.material.side = THREE.BackSide
+      // face
+      this.face = {}
+      this.face.instance = gltf.scene.children[4]
+      this.face.instance.position.z = 0.5
+      this.face.instance.position.x = -1
+      this.face.instance.scale.set(0.3, 0.3, 0.2)
+      this.face.instance.userData = {
+        name: 'face',
+        href: '/face.html'
+      }
+
+      // blurry
+      this.blur = {}
+      this.blur.instance = gltf.scene.children[6]
+      this.blur.instance.position.z = 0.5
+      this.blur.instance.position.x = 1
+      this.blur.instance.scale.set(0.2, 0.2, 0.2)
+      this.blur.instance.userData = {
+        name: 'blur',
+        href: '/blur.html'
+      }
+
+      // double vision
+      this.double = {}
+      this.double.instance = gltf.scene.children[2]
+      this.double.instance.position.z = 0.5
+      this.double.instance.position.x = 3
+      this.double.instance.scale.set(0.25, 0.25, 0.2)
+      this.double.instance.userData = {
+        name: 'double',
+        href: '/double.html'
+      }
+
+      // highlights
+      this.highlights = {}
+      this.highlights.material = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.BackSide
+      })
+
+      // color
+      this.highlights.color = {}
+      this.highlights.color.instance = gltf.scene.children[1]
+      this.highlights.color.instance.material = this.highlights.material.clone()
+
+      // double
+      this.highlights.double = {}
+      this.highlights.double.instance = gltf.scene.children[3]
+      this.highlights.double.instance.material = this.highlights.material.clone()
+
+      // face
+      this.highlights.face = {}
+      this.highlights.face.instance = gltf.scene.children[5]
+      this.highlights.face.instance.material = this.highlights.material.clone()
+
+      // blur
+      this.highlights.blur = {}
+      this.highlights.blur.instance = gltf.scene.children[7]
+      this.highlights.blur.instance.material = this.highlights.material.clone()
 
 
-      this.castable.push(this.home.instance)
-      this.scene.add(this.home.instance)
+      // add castable objects
+      this.castable.push(this.color.instance)
+      this.castable.push(this.double.instance)
+      this.castable.push(this.face.instance)
+      this.castable.push(this.blur.instance)
+
+      // add to scene
+      this.scene.add(
+        this.color.instance,
+        this.double.instance,
+        this.face.instance,
+        this.blur.instance
+      )
     })
 
-    this.geo = new THREE.IcosahedronBufferGeometry(1, 0)
-    this.mat = new THREE.MeshLambertMaterial({
-      color: Math.random() * 0xffffff
-    })
-
-    this.mesh = new THREE.Mesh(this.geo, this.mat)
-
-    // this.hemi = new THREE.HemisphereLight()
-    // this.scene.add(this.hemi)
     const light = new THREE.PointLight(0x008EC4)
     this.scene.add(light)
-
-    // this.mesh.userData = '/face.html'
-    // this.mesh.position.z = -3
-
-    // this.castable.push(this.mesh)
-    // this.scene.add(this.mesh)
-
-    // for (let i = 0; i < 3; i++) {
-    //   const box = this.mesh.clone()
-    //   box.material = new THREE.MeshLambertMaterial({
-    //     color: Math.random() * 0xffffff
-    //   })
-    //   this.castable.push(box)
-    //   this.scene.add(box)
-    // }
-
-
-    // this.castable[0].position.set(-8, 0, 5)
-    // this.castable[0].userData = '/'
-
-    // this.castable[1].visible = false
-    // this.castable[1].position.set(0, 0, -3)
-    // this.castable[1].userData = '/face.html'
-
-    // this.castable[2].position.set(8, 0, 5)
-    // this.castable[2].userData = '/double.html'
-
-
-    this.highlight = new THREE.Mesh(this.geo, new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      side: THREE.BackSide
-    }))
-    // this.highlight.scale.set(1.2, 1.2, 1.2)
-    // this.scene.add(this.highlight)
-
-
-
-    // this.scene.add(this.boxmesh)
-
   }
 
   render() {
     this.time += 0.01;
 
-    this.camera.position.y += this.time * 0.001;
-
-    if (this.controls && this.controls.isLocked || this.isMobile) {
+    if (this.controls && this.controls.isLocked || this.isMobile && !this.debugMode) {
       this.raycaster.setFromCamera(new THREE.Vector2(0, 0), this.camera)
       this.intersects = this.raycaster.intersectObjects(this.castable);
-      document.body.style.cursor = 'pointer'
 
       this.castable.forEach(i => {
-
-        i.rotation.y = Math.sin(this.time);
+        i.rotation.y = this.time;
       })
-
-      this.mesh.rotation.x = this.time;
-      this.mesh.rotation.z = this.time;
-      // this.home.rotation.y = Math.sin(this.time);
-      // this.highlight.rotation.x = this.time;
-      // this.highlight.rotation.z = this.time;
 
       if (this.intersects.length > 0) {
 
@@ -336,28 +332,27 @@ class Room {
           if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
 
           this.intersected = this.intersects[0].object;
-          this.intersected.add(this.home.highlight);
-          // this.highlight.geometry.copy(this.intersected.geometry)
-          // this.highlight.material.side = THREE.BackSide
-          this.home.highlight.scale.set(1.1, 1.1, 1.1)
+          this.intersectedHighlight = this.highlights[this.intersected.userData.name].instance
+          this.intersected.add(this.intersectedHighlight);
+
+          if (this.intersectedHighlight) this.intersectedHighlight.scale.set(1.1, 1.1, 1.1)
+
           this.intersected.currentHex = this.intersected.material.emissive.getHex();
           this.intersected.material.emissive.setHex(0x966CE0);
-
         }
 
       } else {
 
         if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
 
-        if (this.home) this.home.highlight.scale.set(0, 0, 0)
+        if (this.intersectedHighlight) this.intersectedHighlight.scale.set(0, 0, 0)
+
         this.intersected = null;
-        document.body.style.cursor = 'default'
       }
 
     }
 
-    if (this.isMobile && this.started) this.controls.update()
-
+    if (this.isMobile && this.started && !this.debugMode) this.controls.update()
 
     requestAnimationFrame(this.render.bind(this))
 
