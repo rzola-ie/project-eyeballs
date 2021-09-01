@@ -365,18 +365,20 @@ class Room {
       this.highlights.blur.instance = gltf.scene.children[7]
       this.highlights.blur.instance.material = this.highlights.material.clone()
 
+      console.log(this.highlights)
+
 
       // add castable objects
       this.castable.push(this.color.instance)
-      this.castable.push(this.double.instance)
       this.castable.push(this.face.instance)
+      this.castable.push(this.double.instance)
       this.castable.push(this.blur.instance)
 
       // add to scene
       this.scene.add(
         this.color.instance,
-        this.double.instance,
         this.face.instance,
+        this.double.instance,
         this.blur.instance
       )
     })
@@ -393,28 +395,28 @@ class Room {
       this.intersects = this.raycaster.intersectObjects(this.castable);
 
       this.castable.forEach(i => {
-        i.rotation.y = this.time;
+        i.rotation.y = Math.sin(this.time) * 0.5;
       })
 
       if (this.intersects.length > 0) {
 
         if (this.intersected != this.intersects[0].object) {
 
-          if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
+          if (this.intersected) this.intersected.material.color.setHex(this.intersected.currentHex);
 
           this.intersected = this.intersects[0].object;
           this.intersectedHighlight = this.highlights[this.intersected.userData.name].instance
           this.intersected.add(this.intersectedHighlight);
 
-          if (this.intersectedHighlight) this.intersectedHighlight.scale.set(1.1, 1.1, 1.1)
+          if (this.intersectedHighlight) this.intersectedHighlight.scale.set(1.15, 1.15, 1.15)
 
           this.intersected.currentHex = this.intersected.material.emissive.getHex();
-          this.intersected.material.emissive.setHex(0x966CE0);
+          this.intersected.material.color.setHex(0x4BBFE1);
         }
 
       } else {
 
-        if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex);
+        if (this.intersected) this.intersected.material.color.setHex(0xffffff);
 
         if (this.intersectedHighlight) this.intersectedHighlight.scale.set(0, 0, 0)
 
