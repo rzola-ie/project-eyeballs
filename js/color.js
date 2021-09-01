@@ -17,12 +17,18 @@ class Sketch {
     this.width = this.container.offsetWidth
     this.height = this.container.offsetWidth
 
+    this.debugMode = window.location.hash === '#debug'
+
     this.time = 0;
+
+    this.settings = {
+      desaturate: -0.7
+    }
 
     this.startButton = document.getElementById('startButton')
     this.startButton.addEventListener('click', () => {
       this.init();
-      this.settings();
+      this.setSettings();
       this.resize();
       this.addScreen();
       this.addVideoFeed();
@@ -49,10 +55,8 @@ class Sketch {
   }
 
 
-  settings() {
-    this.settings = {
-      desaturate: -0.7
-    }
+  setSettings() {
+    if (!this.debugMode) return
 
     this.pane = new Pane({
       expanded: true
