@@ -84,6 +84,8 @@ class Room {
   }
 
   setSettings() {
+    if (!this.debugMode) return
+
     this.settings = {
       strength: 0.15,
       radius: 0.4,
@@ -241,9 +243,6 @@ class Room {
       1, // radius
       0.2 // threshold
     )
-    this.bloomPass.strength = this.settings.strength
-    this.bloomPass.radius = this.settings.radius
-    this.bloomPass.threshold = this.settings.threshold
     this.effectComposer.addPass(this.bloomPass)
   }
 
