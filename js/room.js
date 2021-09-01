@@ -192,22 +192,22 @@ class Room {
   addCrosshair() {
     this.crosshairCanvas = document.createElement('canvas')
     const ctx = this.crosshairCanvas.getContext('2d')
-    this.crosshairCanvas.width = 100
-    this.crosshairCanvas.height = 100
+    this.crosshairCanvas.width = this.height
+    this.crosshairCanvas.height = this.width
     this.crosshairCanvas.style.display = 'none'
-    this.crosshairCanvas.style.height = '30px'
-    this.crosshairCanvas.style.width = '30px'
+    this.crosshairCanvas.style.height = this.height
+    this.crosshairCanvas.style.width = this.width
     this.crosshairCanvas.style.position = 'absolute'
-    this.crosshairCanvas.style.top = '50%'
-    this.crosshairCanvas.style.left = '50%'
+    this.crosshairCanvas.style.top = '0'
+    this.crosshairCanvas.style.left = '0'
     this.crosshairCanvas.style.userSelect = 'none'
     this.crosshairCanvas.style.pointerEvents = 'none'
-    this.crosshairCanvas.style.transform = 'translate(-50%, -50%)'
     this.crosshairCanvas.setAttribute('id', 'crosshair')
 
+    ctx.globalAlpha = 0.8
     ctx.strokeStyle = '#ffffff'
-    ctx.lineWidth = 12
-    ctx.arc(50, 50, 40, 0, 2 * Math.PI)
+    ctx.lineWidth = 4
+    ctx.arc(this.width / 2, (this.height / 2) - 50, 15, 0, 2 * Math.PI)
     ctx.stroke()
 
     document.body.appendChild(this.crosshairCanvas)
