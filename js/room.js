@@ -4,6 +4,12 @@ import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOri
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+
+import { Pane } from 'tweakpane';
+
 import room from '../static/assets/room.jpg';
 
 class Room {
@@ -77,6 +83,43 @@ class Room {
     window.removeEventListener('devicemotion', this.setGyroStatus.bind(this))
   }
 
+  setSettings() {
+    this.settings = {
+      strength: 0.15,
+      radius: 0.4,
+      threshold: 0.85
+    }
+
+    this.pane = new Pane({ expanded: true })
+
+    this.pane.addInput(this.settings, 'strength', {
+      min: 0,
+      max: 5,
+    })
+      .on('change', ev => {
+        console.log(ev.value)
+        this.bloomPass.strength = +ev.value
+      })
+
+    this.pane.addInput(this.settings, 'radius', {
+      min: 0,
+      max: 10,
+    })
+      .on('change', ev => {
+        console.log(ev.value)
+        this.bloomPass.radius = +ev.value
+      })
+
+    this.pane.addInput(this.settings, 'threshold', {
+      min: -10,
+      max: 10,
+    })
+      .on('change', ev => {
+        console.log(ev.value)
+        this.bloomPass.threshold = +ev.value
+      })
+  }
+
   init() {
     // set the camera
     this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
@@ -97,13 +140,14 @@ class Room {
     this.renderer.setSize(this.width, this.height);
     this.container.appendChild(this.renderer.domElement)
 
-
+    this.setSettings()
     this.checkForGyro()
     this.addCrosshair()
     this.addLights()
     this.setupMouseMove()
     this.setupMouseClick()
     this.addObject()
+    this.addPostProcessing()
     this.resize()
     this.render()
     this.setupResize()
@@ -171,6 +215,36 @@ class Room {
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(1, 1, 1).normalize();
     this.scene.add(light);
+  }
+
+  addPostProcessing() {
+    // webgl render target
+    this.renderTarget = new THREE.WebGLRenderTarget(800, 600, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBFormat,
+      encoding: THREE.sRGBEncoding
+    })
+
+    // effect composer
+    this.effectComposer = new EffectComposer(this.renderer, this.renderTarget)
+    this.effectComposer.setPixelRatio(window.devicePixelRatio)
+    this.effectComposer.setSize(this.width, this.height)
+
+    // passes
+    this.renderPass = new RenderPass(this.scene, this.camera)
+    this.effectComposer.addPass(this.renderPass)
+
+    this.bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(this.width, this.height),
+      0.15, // strength
+      1, // radius
+      0.2 // threshold
+    )
+    this.bloomPass.strength = this.settings.strength
+    this.bloomPass.radius = this.settings.radius
+    this.bloomPass.threshold = this.settings.threshold
+    this.effectComposer.addPass(this.bloomPass)
   }
 
   resize() {
@@ -356,7 +430,8 @@ class Room {
 
     requestAnimationFrame(this.render.bind(this))
 
-    this.renderer.render(this.scene, this.camera)
+    // this.renderer.render(this.scene, this.camera)
+    this.effectComposer.render()
   }
 }
 
