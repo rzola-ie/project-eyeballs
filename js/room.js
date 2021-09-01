@@ -18,7 +18,7 @@ class Room {
 
     this.container = document.getElementById(options.domElement)
     this.width = this.container.offsetWidth
-    this.height = this.container.offsetWidth
+    this.height = this.container.offsetHeight
 
     this.debugMode = window.location.hash === '#debug'
 
@@ -192,11 +192,12 @@ class Room {
   addCrosshair() {
     this.crosshairCanvas = document.createElement('canvas')
     const ctx = this.crosshairCanvas.getContext('2d')
-    this.crosshairCanvas.width = this.height
-    this.crosshairCanvas.height = this.width
+
+    this.crosshairCanvas.width = this.width * window.devicePixelRatio
+    this.crosshairCanvas.height = this.height * window.devicePixelRatio
     this.crosshairCanvas.style.display = 'none'
-    this.crosshairCanvas.style.height = this.height
     this.crosshairCanvas.style.width = this.width
+    this.crosshairCanvas.style.height = this.height
     this.crosshairCanvas.style.position = 'absolute'
     this.crosshairCanvas.style.top = '0'
     this.crosshairCanvas.style.left = '0'
@@ -207,7 +208,7 @@ class Room {
     ctx.globalAlpha = 0.8
     ctx.strokeStyle = '#ffffff'
     ctx.lineWidth = 4
-    ctx.arc(this.width / 2, (this.height / 2) - 50, 15, 0, 2 * Math.PI)
+    ctx.arc(this.width / 2, this.height / 2, 15, 0, 2 * Math.PI)
     ctx.stroke()
 
     document.body.appendChild(this.crosshairCanvas)
