@@ -37,7 +37,8 @@ class Room {
     this.instructions = document.getElementById('instructions');
     this.gyroStatus = document.getElementById('gyro');
 
-    this.loader = new GLTFLoader()
+    this.modelLoader = new GLTFLoader()
+    this.textureLoader = new THREE.TextureLoader();
 
 
     this.blocker.addEventListener('click', () => {
@@ -122,14 +123,8 @@ class Room {
       })
   }
 
-  init() {
-    // set the camera
-    this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
-    this.camera.position.z = 5
-    // this.camera.position.x = -9.3
-    // this.camera.position.y = 1.6
-
-    this.loader.load('/models/office.glb', gltf => {
+  addOffice() {
+    this.modelLoader.load('/models/office.glb', gltf => {
       // console.log(gltf)
       // gltf.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
       // Traverse
@@ -143,6 +138,35 @@ class Room {
           //     baseMaterial: _child.material
           //   }
           // }
+          console.log(_child.name)
+          if (_child.name === 'wallsbrick') {
+            const color = this.textureLoader.load('/textures/bricks/color.jpg')
+            const aoMap = this.textureLoader.load('/textures/bricks/ambientOcclusion.jpg')
+            const normal = this.textureLoader.load('/textures/bricks/normal.jpg')
+            const roughness = this.textureLoader.load('/textures/bricks/roughness.jpg')
+            const height = this.textureLoader.load('/textures/bricks/height.png')
+
+            color.repeat.set(20, 20)
+            aoMap.repeat.set(20, 20)
+            normal.repeat.set(20, 20)
+            roughness.repeat.set(20, 20)
+            height.repeat.set(20, 20)
+
+            color.wrapS = color.wrapT = THREE.RepeatWrapping
+            aoMap.wrapS = aoMap.wrapT = THREE.RepeatWrapping
+            normal.wrapS = normal.wrapT = THREE.RepeatWrapping
+            roughness.wrapS = roughness.wrapT = THREE.RepeatWrapping
+            height.wrapS = height.wrapT = THREE.RepeatWrapping
+
+            _child.material = new THREE.MeshStandardMaterial({
+              map: color,
+              aoMap: aoMap,
+              normalMap: normal,
+              roughnessMap: roughness,
+              displacementMap: height,
+              displacementScale: 0.1
+            })
+          }
 
           // Add shadow
           _child.castShadow = true
@@ -154,6 +178,14 @@ class Room {
       this.model.position.set(1, -2, 12)
       this.model.rotation.y = - Math.PI * 0.5
     })
+  }
+
+  init() {
+    // set the camera
+    this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
+    this.camera.position.z = 5
+    // this.camera.position.x = -9.3
+    // this.camera.position.y = 1.6
 
     // set the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -174,6 +206,7 @@ class Room {
     this.addLights()
     this.setupMouseMove()
     this.setupMouseClick()
+    this.addOffice()
     this.addObject()
     // this.setLights()
     this.addPostProcessing()
@@ -329,7 +362,7 @@ class Room {
   }
 
   addObject() {
-    this.loader.load('/models/home.glb', gltf => {
+    this.modelLoader.load('/models/home.glb', gltf => {
       console.log(gltf)
 
       // color loss
