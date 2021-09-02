@@ -176,7 +176,7 @@ class Room {
     // set the camera
     this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
     this.camera.position.z = 5
-    // this.camera.position.x = -9.3
+    // this.camera.position.x = 2.7
     // this.camera.position.y = 1.6
 
     // set the renderer
@@ -360,8 +360,8 @@ class Room {
       // color loss
       this.color = {}
       this.color.instance = gltf.scene.children[0]
-      this.color.instance.position.set(-3, 0, 0.5)
-      this.color.instance.scale.set(0.2, 0.2, 0.2)
+      this.color.instance.position.set(-2.5, 0, 0.5)
+      this.color.instance.scale.set(0.15, 0.15, 0.15)
       this.color.instance.castShadow = true
       this.color.instance.receiveShadow = true
       this.color.instance.userData = {
@@ -374,8 +374,8 @@ class Room {
       this.face.instance = gltf.scene.children[4]
       this.face.instance.castShadow = true
       this.face.instance.receiveShadow = true
-      this.face.instance.position.set(-1, 0, 0.5)
-      this.face.instance.scale.set(0.3, 0.3, 0.2)
+      this.face.instance.position.set(-1.1, 0, 0.5)
+      this.face.instance.scale.set(0.2, 0.2, 0.2)
       this.face.instance.userData = {
         name: 'face',
         href: '/face.html'
@@ -385,7 +385,7 @@ class Room {
       this.blur = {}
       this.blur.instance = gltf.scene.children[6]
       this.blur.instance.position.set(1, 0, 0.5)
-      this.blur.instance.scale.set(0.2, 0.2, 0.2)
+      this.blur.instance.scale.set(0.15, 0.15, 0.15)
       this.blur.instance.castShadow = true
       this.blur.instance.receiveShadow = true
       this.blur.instance.userData = {
@@ -399,8 +399,8 @@ class Room {
       this.double.instance.castShadow = true
       this.double.instance.receiveShadow = true
       this.double.instance.position.z = 0.5
-      this.double.instance.position.x = 3
-      this.double.instance.scale.set(0.25, 0.25, 0.2)
+      this.double.instance.position.x = 2.5
+      this.double.instance.scale.set(0.15, 0.15, 0.15)
       this.double.instance.userData = {
         name: 'double',
         href: '/double.html'
