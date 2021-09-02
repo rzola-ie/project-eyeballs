@@ -15,7 +15,8 @@ module.exports = defineConfig({
         room: resolve(__dirname, 'room.html'),
         face: resolve(__dirname, 'face.html'),
         double: resolve(__dirname, 'double.html'),
-        color: resolve(__dirname, 'color.html')
+        color: resolve(__dirname, 'color.html'),
+        blur: resolve(__dirname, 'blur.html')
       }
     }
   },
