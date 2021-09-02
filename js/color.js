@@ -129,8 +129,6 @@ class Sketch {
   }
 
   addVideoFeed() {
-    if (this.shaderIndex === 0) return
-
     if (!this.video) {
       this.video = document.createElement('video');
       this.video.style.width = `800px`
@@ -155,7 +153,7 @@ class Sketch {
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
         this.video.srcObject = stream;
-        // this.video.play()
+
       }).catch((error) => {
         console.error('Unable to access the camera/webcam', error)
       })

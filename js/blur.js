@@ -18,8 +18,8 @@ class Sketch {
     this.time = 0;
 
     this.settings = {
-      doubleOffset: 0.4,
-      doubleMix: 0.6,
+      doubleOffset: 0.2,
+      doubleMix: 0.5,
     }
 
     this.startButton = document.getElementById('startButton')
@@ -166,7 +166,7 @@ class Sketch {
     this.time += 0.01;
 
     this.shaderMaterial.uniforms.feed.value = this.videoTexture
-    this.shaderMaterial.uniforms.uTime.value = this.time
+    this.shaderMaterial.uniforms.uTime.value = 0.0
     this.shaderMaterial.uniforms.uDoubleOffset.value = this.settings.doubleOffset
     this.shaderMaterial.uniforms.uDoubleMix.value = this.settings.doubleMix
 
@@ -178,4 +178,4 @@ class Sketch {
   }
 }
 
-new Sketch({ domElement: 'container-double' })
+new Sketch({ domElement: 'container-blur' })

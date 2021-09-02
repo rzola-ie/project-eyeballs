@@ -126,20 +126,46 @@ class Room {
     // set the camera
     this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
     this.camera.position.z = 5
-    // this.camera.position.x = 5
+    // this.camera.position.x = -4.3
+    // this.camera.position.y = 1.6
 
     this.loader.load('/models/office.glb', gltf => {
       // console.log(gltf)
       // gltf.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
-      this.scene.add(gltf.scene)
-      gltf.scene.position.set(1, -2, 12)
-      gltf.scene.rotation.y = - Math.PI * 0.5
+      // Traverse
+      this.model = gltf.scene
+
+      this.model.traverse((_child) => {
+        if (_child instanceof THREE.Mesh) {
+          // Save material
+          // if (typeof this.materials[_child.material.uuid] === 'undefined') {
+          //   this.materials[_child.material.uuid] = {
+          //     baseMaterial: _child.material
+          //   }
+          // }
+
+          // Add shadow
+          _child.castShadow = true
+          _child.receiveShadow = true
+        }
+      })
+
+      this.scene.add(this.model)
+      this.model.position.set(1, -2, 12)
+      this.model.rotation.y = - Math.PI * 0.5
     })
 
     // set the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1), 2));
     this.renderer.setSize(this.width, this.height);
+    this.renderer.physicallyCorrectLights = true
+    this.renderer.gammaOutPut = true
+    this.renderer.outputEncoding = THREE.sRGBEncoding
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    this.renderer.shadowMap.enabled = true
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
+    // this.renderer.toneMappingExposure = 2.3
     this.container.appendChild(this.renderer.domElement)
 
     this.setSettings()
@@ -149,6 +175,7 @@ class Room {
     this.setupMouseMove()
     this.setupMouseClick()
     this.addObject()
+    // this.setLights()
     this.addPostProcessing()
     this.resize()
     this.render()
@@ -240,7 +267,7 @@ class Room {
 
     this.bloomPass = new UnrealBloomPass(
       new THREE.Vector2(this.width, this.height),
-      0.15, // strength
+      0.4, // strength
       1, // radius
       0.2 // threshold
     )
@@ -292,14 +319,15 @@ class Room {
 
   addObject() {
     this.loader.load('/models/home.glb', gltf => {
-      // console.log(gltf)
+      console.log(gltf)
 
       // color loss
       this.color = {}
       this.color.instance = gltf.scene.children[0]
-      this.color.instance.position.z = 0.5
-      this.color.instance.position.x = -3
+      this.color.instance.position.set(-3, 0, 0.5)
       this.color.instance.scale.set(0.2, 0.2, 0.2)
+      this.color.instance.castShadow = true
+      this.color.instance.receiveShadow = true
       this.color.instance.userData = {
         name: 'color',
         href: '/color.html'
@@ -308,8 +336,9 @@ class Room {
       // face
       this.face = {}
       this.face.instance = gltf.scene.children[4]
-      this.face.instance.position.z = 0.5
-      this.face.instance.position.x = -1
+      this.face.instance.castShadow = true
+      this.face.instance.receiveShadow = true
+      this.face.instance.position.set(-1, 0, 0.5)
       this.face.instance.scale.set(0.3, 0.3, 0.2)
       this.face.instance.userData = {
         name: 'face',
@@ -319,9 +348,10 @@ class Room {
       // blurry
       this.blur = {}
       this.blur.instance = gltf.scene.children[6]
-      this.blur.instance.position.z = 0.5
-      this.blur.instance.position.x = 1
+      this.blur.instance.position.set(1, 0, 0.5)
       this.blur.instance.scale.set(0.2, 0.2, 0.2)
+      this.blur.instance.castShadow = true
+      this.blur.instance.receiveShadow = true
       this.blur.instance.userData = {
         name: 'blur',
         href: '/blur.html'
@@ -330,6 +360,8 @@ class Room {
       // double vision
       this.double = {}
       this.double.instance = gltf.scene.children[2]
+      this.double.instance.castShadow = true
+      this.double.instance.receiveShadow = true
       this.double.instance.position.z = 0.5
       this.double.instance.position.x = 3
       this.double.instance.scale.set(0.25, 0.25, 0.2)
@@ -365,8 +397,6 @@ class Room {
       this.highlights.blur.instance = gltf.scene.children[7]
       this.highlights.blur.instance.material = this.highlights.material.clone()
 
-      console.log(this.highlights)
-
 
       // add castable objects
       this.castable.push(this.color.instance)
@@ -382,9 +412,24 @@ class Room {
         this.blur.instance
       )
     })
+  }
 
-    const light = new THREE.PointLight(0xFFF0C9)
-    this.scene.add(light)
+  setLights() {
+    this.lights = []
+
+    const xPos = [-9.3, -4.3, 0.7, 5.7, 10.7, 15.7]
+    const zPos = [2.5, 10.6]
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 6; j++) {
+        this.bulbLight = new THREE.PointLight(0xeeeeff, 1, 10, 2);
+        this.bulbLight.position.set(xPos[j], 1.6, zPos[i])
+        this.bulbLight.castShadow = true
+        this.helper = new THREE.PointLightHelper(this.bulbLight)
+        this.scene.add(this.bulbLight, this.helper)
+        this.lights.push(this.bulbLight)
+      }
+    }
   }
 
   render() {
@@ -408,7 +453,7 @@ class Room {
           this.intersectedHighlight = this.highlights[this.intersected.userData.name].instance
           this.intersected.add(this.intersectedHighlight);
 
-          if (this.intersectedHighlight) this.intersectedHighlight.scale.set(1.15, 1.15, 1.15)
+          if (this.intersectedHighlight) this.intersectedHighlight.scale.set(1.15, 1.15, 1.5)
 
           this.intersected.currentHex = this.intersected.material.emissive.getHex();
           this.intersected.material.color.setHex(0x4BBFE1);
