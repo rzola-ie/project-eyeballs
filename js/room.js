@@ -150,15 +150,13 @@ class Room {
             aoMap.wrapS = aoMap.wrapT = THREE.RepeatWrapping
             normal.wrapS = normal.wrapT = THREE.RepeatWrapping
             roughness.wrapS = roughness.wrapT = THREE.RepeatWrapping
-            height.wrapS = height.wrapT = THREE.RepeatWrapping
+            // height.wrapS = height.wrapT = THREE.RepeatWrapping
 
             _child.material = new THREE.MeshStandardMaterial({
               map: color,
               aoMap: aoMap,
               normalMap: normal,
               roughnessMap: roughness,
-              displacementMap: height,
-              displacementScale: 0.1
             })
           }
 
