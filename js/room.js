@@ -126,7 +126,7 @@ class Room {
     // set the camera
     this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 1, 1600);
     this.camera.position.z = 5
-    // this.camera.position.x = -4.3
+    // this.camera.position.x = -9.3
     // this.camera.position.y = 1.6
 
     this.loader.load('/models/office.glb', gltf => {
@@ -242,9 +242,20 @@ class Room {
   }
 
   addLights() {
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1).normalize();
-    this.scene.add(light);
+    const xPos = [-9.3, -4.3, 0.7, 5.7, 10.7, 15.7]
+    const zPos = [2.5, 10.6]
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 6; j++) {
+        const light = new THREE.PointLight(0xffffdd, 0.8);
+        // const helper = new THREE.PointLightHelper(light)
+        light.position.set(xPos[j], 1.2, zPos[i])
+        this.scene.add(light);
+      }
+    }
+
+    // const light2 = new THREE.AmbientLight(0xffffff, 0.5)
+    // this.scene.add(light2)
   }
 
   addPostProcessing() {
@@ -267,7 +278,7 @@ class Room {
 
     this.bloomPass = new UnrealBloomPass(
       new THREE.Vector2(this.width, this.height),
-      0.4, // strength
+      0.25, // strength
       1, // radius
       0.2 // threshold
     )
