@@ -132,12 +132,6 @@ class Room {
 
       this.model.traverse((_child) => {
         if (_child instanceof THREE.Mesh) {
-          // Save material
-          // if (typeof this.materials[_child.material.uuid] === 'undefined') {
-          //   this.materials[_child.material.uuid] = {
-          //     baseMaterial: _child.material
-          //   }
-          // }
           console.log(_child.name)
           if (_child.name === 'wallsbrick') {
             const color = this.textureLoader.load('/textures/bricks/color.jpg')
@@ -287,8 +281,8 @@ class Room {
       }
     }
 
-    // const light2 = new THREE.AmbientLight(0xffffff, 0.5)
-    // this.scene.add(light2)
+    const light2 = new THREE.AmbientLight(0xffffff, 0.1)
+    this.scene.add(light2)
   }
 
   addPostProcessing() {
