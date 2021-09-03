@@ -15,7 +15,7 @@ class Sketch {
 
     this.container = document.getElementById(options.domElement)
     this.width = this.container.offsetWidth
-    this.height = this.container.offsetHeight
+    this.height = this.container.offsetWidth
 
     this.debugMode = window.location.hash === '#debug'
 

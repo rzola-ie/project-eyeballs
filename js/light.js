@@ -100,7 +100,7 @@ class Sketch {
       vertexShader: lightVertex,
       fragmentShader: lightFragment,
       uniforms: {
-        uSensetivity: { value: 0.5 },
+        uSensetivity: { value: 0 },
         feed: { value: 0 },
         uTime: { value: 0.0 },
       }
@@ -186,7 +186,7 @@ class Sketch {
 
     this.shaderMaterial.uniforms.feed.value = this.videoTexture
     this.shaderMaterial.uniforms.uTime.value = this.time
-    this.shaderMaterial.uniforms.uSensetivity.value = this.settings.sensetivity
+    // this.shaderMaterial.uniforms.uSensetivity.value = this.settings.sensetivity
 
     this.shaderMaterial.needsUpdate = true
 
