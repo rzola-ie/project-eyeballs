@@ -98,6 +98,7 @@ varying vec2 vUv;
 
 uniform sampler2D feed;
 uniform float uTime;
+uniform float uSensetivity;
 
 void main() {
   vec2 centeredUv = vUv - 0.5;
@@ -105,7 +106,7 @@ void main() {
   vec4 cameraView = texture2D(feed, vUv);
 
   // light sensitivity
-  cameraView += 0.5;
+  cameraView += uSensetivity;
 
 
   gl_FragColor = cameraView;

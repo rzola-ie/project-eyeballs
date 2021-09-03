@@ -124,7 +124,7 @@ class Room {
   }
 
   addOffice() {
-    this.modelLoader.load('/models/office.glb', gltf => {
+    this.modelLoader.load('/models/office2.glb', gltf => {
       // console.log(gltf)
       // gltf.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
       // Traverse
@@ -132,7 +132,7 @@ class Room {
 
       this.model.traverse((_child) => {
         if (_child instanceof THREE.Mesh) {
-          console.log(_child.name)
+          // apply the brick texture
           if (_child.name === 'wallsbrick') {
             const color = this.textureLoader.load('/textures/bricks/color.jpg')
             const aoMap = this.textureLoader.load('/textures/bricks/ambientOcclusion.jpg')
@@ -355,7 +355,6 @@ class Room {
 
   addObject() {
     this.modelLoader.load('/models/home.glb', gltf => {
-      console.log(gltf)
 
       // color loss
       this.color = {}
@@ -363,7 +362,7 @@ class Room {
       this.color.instance.position.set(-2.5, 0, 0.5)
       this.color.instance.scale.set(0.15, 0.15, 0.15)
       this.color.instance.castShadow = true
-      this.color.instance.receiveShadow = true
+
       this.color.instance.userData = {
         name: 'color',
         href: '/color.html'
@@ -373,8 +372,8 @@ class Room {
       this.face = {}
       this.face.instance = gltf.scene.children[4]
       this.face.instance.castShadow = true
-      this.face.instance.receiveShadow = true
-      this.face.instance.position.set(-1.1, 0, 0.5)
+
+      this.face.instance.position.set(-1.3, 0, 0.5)
       this.face.instance.scale.set(0.2, 0.2, 0.2)
       this.face.instance.userData = {
         name: 'face',
@@ -384,10 +383,10 @@ class Room {
       // blurry
       this.blur = {}
       this.blur.instance = gltf.scene.children[6]
-      this.blur.instance.position.set(1, 0, 0.5)
+      this.blur.instance.position.set(1.3, 0, 0.5)
       this.blur.instance.scale.set(0.15, 0.15, 0.15)
       this.blur.instance.castShadow = true
-      this.blur.instance.receiveShadow = true
+
       this.blur.instance.userData = {
         name: 'blur',
         href: '/blur.html'
@@ -397,13 +396,26 @@ class Room {
       this.double = {}
       this.double.instance = gltf.scene.children[2]
       this.double.instance.castShadow = true
-      this.double.instance.receiveShadow = true
+
       this.double.instance.position.z = 0.5
       this.double.instance.position.x = 2.5
       this.double.instance.scale.set(0.15, 0.15, 0.15)
       this.double.instance.userData = {
         name: 'double',
         href: '/double.html'
+      }
+
+      // light vision
+      this.light = {}
+      this.light.instance = gltf.scene.children[8]
+      this.light.instance.castShadow = true
+
+      this.light.instance.position.z = 0.5
+      this.light.instance.position.x = 0
+      this.light.instance.scale.set(0.15, 0.15, 0.15)
+      this.light.instance.userData = {
+        name: 'light',
+        href: '/light.html'
       }
 
       // highlights
@@ -433,19 +445,26 @@ class Room {
       this.highlights.blur.instance = gltf.scene.children[7]
       this.highlights.blur.instance.material = this.highlights.material.clone()
 
+      // light
+      this.highlights.light = {}
+      this.highlights.light.instance = gltf.scene.children[9]
+      this.highlights.light.instance.material = this.highlights.material.clone()
+
 
       // add castable objects
       this.castable.push(this.color.instance)
       this.castable.push(this.face.instance)
       this.castable.push(this.double.instance)
       this.castable.push(this.blur.instance)
+      this.castable.push(this.light.instance)
 
       // add to scene
       this.scene.add(
         this.color.instance,
         this.face.instance,
         this.double.instance,
-        this.blur.instance
+        this.blur.instance,
+        this.light.instance
       )
     })
   }
