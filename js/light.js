@@ -156,7 +156,7 @@ class Sketch {
 
   addPostProcessing() {
     // webgl render target
-    this.renderTarget = new THREE.WebGLRenderTarget(800, 600, {
+    this.renderTarget = new THREE.WebGLRenderTarget(this.width, this.height, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       format: THREE.RGBFormat,
