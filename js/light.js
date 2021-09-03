@@ -1,5 +1,8 @@
 import '../css/style.css'
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 import { Pane } from 'tweakpane';
 
 import lightVertex from './shader/light/vertex.glsl?raw'
@@ -18,7 +21,7 @@ class Sketch {
     this.time = 0;
 
     this.settings = {
-      sensetivity: 0.5
+      sensetivity: 0
     }
 
     this.startButton = document.getElementById('startButton')
@@ -28,6 +31,7 @@ class Sketch {
       this.resize();
       this.addScreen();
       this.addVideoFeed();
+      this.addPostProcessing()
       this.render();
       this.setupResize();
     })
@@ -150,6 +154,33 @@ class Sketch {
     }
   }
 
+  addPostProcessing() {
+    // webgl render target
+    this.renderTarget = new THREE.WebGLRenderTarget(800, 600, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBFormat,
+      encoding: THREE.sRGBEncoding
+    })
+
+    // effect composer
+    this.effectComposer = new EffectComposer(this.renderer, this.renderTarget)
+    this.effectComposer.setPixelRatio(window.devicePixelRatio)
+    this.effectComposer.setSize(this.width, this.height)
+
+    // passes
+    this.renderPass = new RenderPass(this.scene, this.camera)
+    this.effectComposer.addPass(this.renderPass)
+
+    this.bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(this.width, this.height),
+      0.65, // strength
+      1, // radius
+      0.2 // threshold
+    )
+    this.effectComposer.addPass(this.bloomPass)
+  }
+
   render() {
     this.time += 0.01;
 
@@ -159,7 +190,8 @@ class Sketch {
 
     this.shaderMaterial.needsUpdate = true
 
-    this.renderer.render(this.scene, this.camera)
+    // this.renderer.render(this.scene, this.camera)
+    this.effectComposer.render()
 
     requestAnimationFrame(this.render.bind(this))
   }
