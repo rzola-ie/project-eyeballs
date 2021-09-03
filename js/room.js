@@ -131,6 +131,15 @@ class Room {
       this.model = gltf.scene
 
       this.model.traverse((_child) => {
+        // buildings
+        if (_child.name === 'buildings') {
+          if (_child instanceof THREE.Mesh) {
+            _child.material.transparent = true
+            _child.material.opacity = 0.5
+            console.log(_child.material)
+          }
+        }
+
         if (_child instanceof THREE.Mesh) {
           // apply the brick texture
           if (_child.name === 'wallsbrick') {
@@ -354,6 +363,17 @@ class Room {
   }
 
   addObject() {
+    const spot = new THREE.SpotLight(0xE7E284, 400, 200, 1.05, 0.5, 2)
+    spot.shadow.focus = 1
+    const helper = new THREE.SpotLightHelper(spot)
+    spot.castShadow = true;
+    spot.shadow.mapSize.width = 2048
+    spot.shadow.mapSize.height = 2048
+    spot.shadow.camera.far = 7
+    spot.position.set(40, 20, -40)
+
+    this.scene.add(spot)
+
     this.modelLoader.load('/models/home.glb', gltf => {
 
       // color loss
