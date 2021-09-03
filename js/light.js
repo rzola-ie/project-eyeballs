@@ -48,7 +48,7 @@ class Sketch {
 
     //set the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1), 2))
     this.renderer.setSize(this.width, this.height)
     this.container.appendChild(this.renderer.domElement)
   }
