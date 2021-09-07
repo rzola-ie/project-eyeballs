@@ -14,8 +14,7 @@ uniform sampler2D feed;
 uniform float uDesaturate;
 
 void main() {
-  vec2 centeredUv = vUv - 0.5;
-  float distanceToCenter = length(centeredUv);
+
   vec4 cameraView = texture2D(feed, vUv);
 
   // color vision loss

@@ -126,17 +126,19 @@ class Sketch {
       // portrait
       this.mesh.scale.set(this.width, this.height, 1)
     }
+    this.mesh.needsUpdate = true
   }
 
   addVideoFeed() {
     if (!this.video) {
       this.video = document.createElement('video');
-      this.video.style.width = `800px`
-      this.video.style.height = `600px`
+      this.video.style.width = `1920px`
+      this.video.style.height = `1080px`
       this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
       this.video.style.right = `0px`
+      this.video.style.objectFit = `cover`
 
       this.video.setAttribute('id', 'video')
       this.video.setAttribute('muted', 'true')
@@ -145,6 +147,15 @@ class Sketch {
 
       document.body.appendChild(this.video);
       this.videoTexture = new THREE.VideoTexture(this.video)
+      this.videoTexture.minFilter = THREE.LinearFilter;
+      this.videoTexture.magFilter = THREE.LinearFilter;
+      this.videoTexture.format = THREE.RGBFormat;
+
+      this.video.addEventListener("loadedmetadata", (e) => {
+
+        console.log(this.videoTexture.image.videoWidth, this.videoTexture.image.videoHeight);
+
+      }, false);
     }
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Eyeballs | The Room</title>
+    <title>Room</title>
   </head>
-  <body>
-    <header class="header">
-      <a href="/room.html">go to your room</a>
-    </header>
-    
-		<div id="overlay">
-			<button id="startButton">Start Demo</button>
-		</div>
+<body>
+  <div id="blocker">
+    <div id="instructions">
+      <p style="font-size:36px">
+        Click to begin
+      </p>
+      <p id="gyro"></p>
+    </div>
+  </div>
+  <div id="container-room"></div>
 
-    <div id="container"></div>
-
-    <script type="module" src="/js/main.js"></script>
-  </body>
+  <script type="module" src="/js/room.js"></script>
+</body>
 </html>
