@@ -22,10 +22,6 @@ class Sketch {
 
     this.time = 0;
 
-    // this.settings = {
-    //   doubleOffset: 0.2,
-    //   doubleMix: 0.5,
-    // }
     this.settings = {
       focus: 2000.0,
       aperture: 5,
