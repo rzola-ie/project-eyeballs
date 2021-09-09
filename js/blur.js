@@ -27,9 +27,9 @@ class Sketch {
     //   doubleMix: 0.5,
     // }
     this.settings = {
-      focus: 500.0,
+      focus: 2000.0,
       aperture: 5,
-      maxBlur: 0.01
+      maxBlur: 0.03
     }
 
     this.startButton = document.getElementById('startButton')
@@ -70,9 +70,9 @@ class Sketch {
     this.renderPass = new RenderPass(this.scene, this.camera)
 
     this.bokehPass = new BokehPass(this.scene, this.camera, {
-      focus: 1.0,
+      focus: 2000.0,
       aperture: 0.025,
-      maxblur: 0.01,
+      maxblur: 0.03,
       width: this.width,
       height: this.height
     });
@@ -223,12 +223,9 @@ class Sketch {
     this.shaderMaterial.needsUpdate = true
 
     if (this.hasPostProcessing) {
-      this.bokehBlurOffset = Math.sin(this.time) - 1.0
-      console.log(this.bokehBlurOffset)
-
       this.bokehPass.uniforms.focus.value = this.settings.focus;
       this.bokehPass.uniforms.aperture.value = this.settings.aperture * 0.00001;
-      this.bokehPass.uniforms.maxblur.value = this.settings.maxBlur * this.bokehBlurOffset;
+      this.bokehPass.uniforms.maxblur.value = this.settings.maxBlur;
 
       this.effectComposer.render()
     } else {
