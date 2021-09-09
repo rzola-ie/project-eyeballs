@@ -1,5 +1,9 @@
 import '../css/style.css'
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass';
+
 import { Pane } from 'tweakpane';
 
 import doubleVertex from './shader/double/vertex.glsl?raw'
@@ -14,12 +18,18 @@ class Sketch {
     this.height = this.container.offsetHeight
 
     this.debugMode = window.location.hash === '#debug'
+    this.hasPostProcessing = false;
 
     this.time = 0;
 
+    // this.settings = {
+    //   doubleOffset: 0.2,
+    //   doubleMix: 0.5,
+    // }
     this.settings = {
-      doubleOffset: 0.2,
-      doubleMix: 0.5,
+      focus: 500.0,
+      aperture: 5,
+      maxBlur: 0.01
     }
 
     this.startButton = document.getElementById('startButton')
@@ -29,8 +39,10 @@ class Sketch {
       this.resize();
       this.addScreen();
       this.addVideoFeed();
+      this.initPostProcessing()
       this.render();
       this.setupResize();
+      // this.addDebugCube()
     })
   }
 
@@ -39,16 +51,35 @@ class Sketch {
     overlay.remove();
 
     // set the camera
-    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 10, 1000)
+    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 1, 1000)
     this.camera.position.z = 600;
     this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
 
     //set the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1), 2))
     this.renderer.setSize(this.width, this.height)
+    this.renderer.autoClear = false;
     this.container.appendChild(this.renderer.domElement)
 
+  }
+
+  initPostProcessing() {
+    this.hasPostProcessing = true
+    this.effectComposer = new EffectComposer(this.renderer)
+    this.renderPass = new RenderPass(this.scene, this.camera)
+
+    this.bokehPass = new BokehPass(this.scene, this.camera, {
+      focus: 1.0,
+      aperture: 0.025,
+      maxblur: 0.01,
+      width: this.width,
+      height: this.height
+    });
+    this.bokehBlurOffset = 0;
+
+    this.effectComposer.addPass(this.renderPass)
+    this.effectComposer.addPass(this.bokehPass)
   }
 
   setSettings() {
@@ -58,16 +89,22 @@ class Sketch {
       expanded: true
     });
 
-    this.doubleOffsetPane = this.pane.addInput(this.settings, 'doubleOffset', {
-      min: 0.0,
-      max: 1.0,
-
+    this.pane.addInput(this.settings, 'focus', {
+      min: 0,
+      max: 3000,
+      step: 10
     })
 
-    this.doubleMixPane = this.pane.addInput(this.settings, 'doubleMix', {
-      min: 0.0,
-      max: 1.0,
+    this.pane.addInput(this.settings, 'aperture', {
+      min: 0,
+      max: 10,
+      step: 0.1
+    })
 
+    this.pane.addInput(this.settings, 'maxBlur', {
+      min: 0,
+      max: 0.1,
+      step: 0.001
     })
   }
 
@@ -79,7 +116,15 @@ class Sketch {
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
 
-    this.renderer.setSize(this.width, this.height);
+    const pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
+
+    if (this.hasPostProcessing) {
+      this.effectComposer.setSize(this.width, this.height)
+      this.effectComposer.setPixelRatio(pixelRatio)
+    } else {
+      this.renderer.setSize(this.width, this.height);
+      this.renderer.setPixelRatio(pixelRatio)
+    }
 
     this.camera.aspect = this.width / this.height;
     this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
@@ -99,20 +144,28 @@ class Sketch {
     }
   }
 
+  addDebugCube() {
+    this.camera.position.z = 6;
+    this.camera.fov = 30
+
+    const geometry = new THREE.BoxBufferGeometry(2, 2, 2)
+    const material = new THREE.MeshLambertMaterial({ color: 0xff0000, })
+    const mesh = new THREE.Mesh(geometry, material)
+    mesh.rotation.x = 0.25
+    mesh.rotation.y = 0.25
+
+    const light = new THREE.HemisphereLight(0xddddff, 0x552200, 1);
+
+    this.scene.add(mesh, light)
+  }
+
   addScreen() {
     this.geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
     this.shaderMaterial = new THREE.ShaderMaterial({
       vertexShader: doubleVertex,
       fragmentShader: doubleFragment,
       uniforms: {
-        uDesaturate: { value: this.settings.desaturate },
-        uDoubleOffset: { value: this.settings.doubleOffset },
-        uDoubleMix: { value: this.settings.doubleMix },
         feed: { value: 0 },
-        uProgress: { value: 0.0 },
-        uQuadSize: { value: new THREE.Vector2(100, 178) },
-        uResolution: { value: new THREE.Vector2(this.width, this.height) },
-        uTime: { value: 0.0 },
       }
     })
 
@@ -166,13 +219,21 @@ class Sketch {
     this.time += 0.01;
 
     this.shaderMaterial.uniforms.feed.value = this.videoTexture
-    this.shaderMaterial.uniforms.uTime.value = 0.0
-    this.shaderMaterial.uniforms.uDoubleOffset.value = this.settings.doubleOffset
-    this.shaderMaterial.uniforms.uDoubleMix.value = this.settings.doubleMix
 
     this.shaderMaterial.needsUpdate = true
 
-    this.renderer.render(this.scene, this.camera)
+    if (this.hasPostProcessing) {
+      this.bokehBlurOffset = Math.sin(this.time) - 1.0
+      console.log(this.bokehBlurOffset)
+
+      this.bokehPass.uniforms.focus.value = this.settings.focus;
+      this.bokehPass.uniforms.aperture.value = this.settings.aperture * 0.00001;
+      this.bokehPass.uniforms.maxblur.value = this.settings.maxBlur * this.bokehBlurOffset;
+
+      this.effectComposer.render()
+    } else {
+      this.renderer.render(this.scene, this.camera)
+    }
 
     requestAnimationFrame(this.render.bind(this))
   }
