@@ -5,7 +5,7 @@ void main() {
   vec4 viewPosition = viewMatrix * modelPosition;
   vec4 projectionPosition = projectionMatrix * viewPosition;
 
-  gl_Position = projectionPosition;
+  gl_Position = vec4(position, 1.0);
 
   vUv = uv;
 }

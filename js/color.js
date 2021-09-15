@@ -42,9 +42,9 @@ class Sketch {
     overlay.remove();
 
     // set the camera
-    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 10, 1000)
-    this.camera.position.z = 600;
-    this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
+    this.camera = new THREE.PerspectiveCamera(30, this.width / this.height, 0.001, 1000)
+    this.camera.position.z = 5;
+    // this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
 
     //set the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -84,25 +84,12 @@ class Sketch {
     this.renderer.setSize(this.width, this.height);
 
     this.camera.aspect = this.width / this.height;
-    this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
+    // this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
     this.camera.updateProjectionMatrix();
-
-    // device orientation
-    if (this.mesh) {
-      if (this.width > this.height) {
-        //landscape
-        this.mesh.scale.set(Math.ceil(this.height * 1.777777), this.height, 1)
-      } else {
-        //portrait
-        this.mesh.scale.set(this.width, this.width * 1.777777, 1)
-      }
-
-      this.addVideoFeed()
-    }
   }
 
   addScreen() {
-    this.geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
+    this.geometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
     this.shaderMaterial = new THREE.ShaderMaterial({
       vertexShader: colorVertex,
       fragmentShader: colorFragment,
@@ -118,15 +105,6 @@ class Sketch {
 
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
     this.scene.add(this.mesh)
-
-    if (this.width > this.height) {
-      // landscape
-      this.mesh.scale.set(this.width, this.height, 1)
-    } else {
-      // portrait
-      this.mesh.scale.set(this.width, this.height, 1)
-    }
-    this.mesh.needsUpdate = true
   }
 
   addVideoFeed() {
