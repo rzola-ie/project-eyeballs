@@ -84,8 +84,15 @@ class Sketch {
     this.renderer.setSize(this.width, this.height);
 
     this.camera.aspect = this.width / this.height;
+
+    if (this.shaderMaterial) {
+      console.log('derp')
+      this.shaderMaterial.uniforms.uResolution.value = new THREE.Vector2(this.width, this.height)
+      this.shaderMaterial.needsUpdate = true;
+    }
     // this.camera.fov = 2 * Math.atan((this.height / 2) / 600) * 180 / Math.PI
     this.camera.updateProjectionMatrix();
+
   }
 
   addScreen() {
@@ -110,8 +117,9 @@ class Sketch {
   addVideoFeed() {
     if (!this.video) {
       this.video = document.createElement('video');
-      this.video.style.width = `1920px`
-      this.video.style.height = `1080px`
+
+      this.video.style.height = `1920px`
+      this.video.style.width = `1080px`
       this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
@@ -130,6 +138,7 @@ class Sketch {
       this.videoTexture.format = THREE.RGBFormat;
 
       this.video.addEventListener("loadedmetadata", (e) => {
+        console.log(this.videoTexture.image)
 
         console.log(this.videoTexture.image.videoWidth, this.videoTexture.image.videoHeight);
 

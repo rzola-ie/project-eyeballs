@@ -12,18 +12,28 @@ varying vec2 vUv;
 
 uniform sampler2D feed;
 uniform float uDesaturate;
+uniform vec2 uResolution;
 
 void main() {
+  vec2 newUV = vUv;
+  // float u = vUv.x;
+  // float v = (vUv.y - 1.0 / 6.0) * 3.0 / 2.0;
+  // newUV = vec2(u, v);
 
-  vec4 cameraView = texture2D(feed, vUv);
+  // float ratio = 16. / 9.; //480./204.;
+  float ratio = uResolution.y / uResolution.x; //480./204.;
+  newUV.y *= ratio;
+  
+  newUV.y -= (0.5 - (1. / ratio) * 0.5) * ratio;
+
+  if(newUV.y < 0.0 || newUV.y > 1.0) discard;
+
+
+  vec4 cameraView = texture2D(feed, newUV);
 
   // color vision loss
   vec3 color = cameraView.rgb;
   color = adjustSaturation(color, uDesaturate);
-
-
-
-
 
   gl_FragColor = vec4(color, cameraView.a);
 }
