@@ -104,9 +104,9 @@ class Sketch {
         uDesaturate: { value: this.settings.desaturate },
         feed: { value: 0 },
         uProgress: { value: 0.0 },
-        uQuadSize: { value: new THREE.Vector2(100, 178) },
         uResolution: { value: new THREE.Vector2(this.width, this.height) },
         uTime: { value: 0.0 },
+        u_adjust_uv: { value: new THREE.Vector2(1, 9/16)},
       }
     })
 
@@ -118,8 +118,8 @@ class Sketch {
     if (!this.video) {
       this.video = document.createElement('video');
 
-      this.video.style.height = `1920px`
-      this.video.style.width = `1080px`
+      this.video.style.height = this.height
+      this.video.style.width = this.width
       this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
@@ -146,7 +146,13 @@ class Sketch {
     }
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { facingMode: 'environment' } };
+      const constraints = { video: { 
+        facingMode: 'environment',
+        aspectRatio: 1.777777778,
+        height: this.height,
+        width:  this.width
+      } 
+    };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture
