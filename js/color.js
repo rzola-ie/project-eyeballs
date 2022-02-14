@@ -144,8 +144,8 @@ class Sketch {
       const constraints = { video: { 
         facingMode: 'environment',
         aspectRatio: 1.777777778,
-        height: this.height,
-        width:  this.width
+        height: this.height * window.devicePixelRatio,
+        width:  this.width * window.devicePixelRatio
       }
     };
 
