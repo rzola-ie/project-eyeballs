@@ -106,7 +106,7 @@ class Sketch {
     })
 
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
-    // this.scene.add(this.mesh)
+    this.scene.add(this.mesh)
   }
 
   addVideoFeed() {
@@ -115,7 +115,7 @@ class Sketch {
 
       this.video.style.height = this.height * window.devicePixelRatio
       this.video.style.width = this.width * window.devicePixelRatio
-      // this.video.style.transform = `scale(0.0001, 0.0001)`
+      this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
       this.video.style.right = `0px`
