@@ -6,9 +6,6 @@ import { Pane } from 'tweakpane';
 import colorVertex from './shader/color/vertex.glsl?raw'
 import colorFragment from './shader/color/fragment.glsl?raw'
 
-
-import test from './test'
-
 class Sketch {
   constructor(options) {
     this.scene = new THREE.Scene();
