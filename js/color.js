@@ -106,7 +106,6 @@ class Sketch {
         uProgress: { value: 0.0 },
         uResolution: { value: new THREE.Vector2(this.width, this.height) },
         uTime: { value: 0.0 },
-        u_adjust_uv: { value: new THREE.Vector2(1, 9/16)},
       }
     })
 
@@ -151,7 +150,7 @@ class Sketch {
         aspectRatio: 1.777777778,
         height: this.height,
         width:  this.width
-      } 
+      }
     };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {

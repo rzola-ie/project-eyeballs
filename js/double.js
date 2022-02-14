@@ -131,12 +131,14 @@ class Sketch {
   addVideoFeed() {
     if (!this.video) {
       this.video = document.createElement('video');
-      this.video.style.width = `800px`
-      this.video.style.height = `600px`
+
+      this.video.style.height = this.height
+      this.video.style.width = this.width
       this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
       this.video.style.right = `0px`
+      this.video.style.objectFit = `cover`
 
       this.video.setAttribute('id', 'video')
       this.video.setAttribute('muted', 'true')
@@ -148,7 +150,13 @@ class Sketch {
     }
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { facingMode: 'environment' } };
+      const constraints = { video: { 
+        facingMode: 'environment',
+        aspectRatio: 1.777777778,
+        height: this.height,
+        width:  this.width
+      }
+    };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture

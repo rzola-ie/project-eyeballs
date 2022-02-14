@@ -17,7 +17,8 @@ module.exports = defineConfig({
         double: resolve(__dirname, 'double.html'),
         color: resolve(__dirname, 'color.html'),
         blur: resolve(__dirname, 'blur.html'),
-        light: resolve(__dirname, 'light.html')
+        light: resolve(__dirname, 'light.html'),
+        test: resolve(__dirname, 'test.html')
       }
     }
   },
