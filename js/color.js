@@ -134,20 +134,18 @@ class Sketch {
 
       this.video.addEventListener("loadedmetadata", (e) => {
         console.log(this.videoTexture.image)
-
-        console.log(this.videoTexture.image.videoWidth, this.videoTexture.image.videoHeight);
-
       }, false);
     }
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { 
-        facingMode: 'environment',
-        aspectRatio: 1.777777778,
-        height: this.height * window.devicePixelRatio,
-        width:  this.width * window.devicePixelRatio
-      }
-    };
+      const constraints = {
+        video: {
+          facingMode: 'environment',
+          aspectRatio: 1.777777778,
+          height: this.height * window.devicePixelRatio,
+          width: this.width * window.devicePixelRatio
+        }
+      };
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture

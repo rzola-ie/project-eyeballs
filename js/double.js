@@ -132,8 +132,8 @@ class Sketch {
     if (!this.video) {
       this.video = document.createElement('video');
 
-      this.video.style.height = this.height
-      this.video.style.width = this.width
+      this.video.style.height = this.height * window.devicePixelRatio
+      this.video.style.width = this.width * window.devicePixelRatio
       this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
@@ -150,13 +150,16 @@ class Sketch {
     }
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const constraints = { video: { 
-        facingMode: 'environment',
-        aspectRatio: 1.777777778,
-        height: this.height,
-        width:  this.width
-      }
-    };
+      const constraints = {
+        video: {
+          facingMode: 'environment',
+          aspectRatio: 1.777777778,
+          height: this.height * window.devicePixelRatio,
+          width: this.width * window.devicePixelRatio
+        }
+      };
+
+      console.log(this.video.style.height, this.video.style.width)
 
       navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
         // apply the stream to the video element used in the texture

@@ -99,13 +99,11 @@ varying vec2 vUv;
 uniform sampler2D feed;
 uniform float uDoubleOffset;
 uniform float uDoubleMix;
-uniform vec2 uResolution;
 uniform float uTime;
 
 void main() {
 
   vec2 uv = vUv;
-  float ratio = uResolution.y / uResolution.x;
 
   vec3 color = vec3(0.0);
 
