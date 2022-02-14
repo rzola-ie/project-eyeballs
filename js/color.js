@@ -113,8 +113,8 @@ class Sketch {
     if (!this.video) {
       this.video = document.createElement('video');
 
-      this.video.style.height = this.height
-      this.video.style.width = this.width
+      this.video.style.height = this.height * window.devicePixelRatio
+      this.video.style.width = this.width * window.devicePixelRatio
       // this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
