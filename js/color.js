@@ -101,13 +101,12 @@ class Sketch {
         uDesaturate: { value: this.settings.desaturate },
         feed: { value: 0 },
         uProgress: { value: 0.0 },
-        uResolution: { value: new THREE.Vector2(this.width, this.height) },
         uTime: { value: 0.0 },
       }
     })
 
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
-    this.scene.add(this.mesh)
+    // this.scene.add(this.mesh)
   }
 
   addVideoFeed() {
@@ -116,7 +115,7 @@ class Sketch {
 
       this.video.style.height = this.height
       this.video.style.width = this.width
-      this.video.style.transform = `scale(0.0001, 0.0001)`
+      // this.video.style.transform = `scale(0.0001, 0.0001)`
       this.video.style.position = `fixed`
       this.video.style.bottom = `0px`
       this.video.style.right = `0px`
@@ -144,7 +143,6 @@ class Sketch {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       const constraints = { video: { 
         facingMode: 'environment',
-        focusMode: 'auto',
         aspectRatio: 1.777777778,
         height: this.height,
         width:  this.width
