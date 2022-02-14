@@ -144,6 +144,7 @@ class Sketch {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       const constraints = { video: { 
         facingMode: 'environment',
+        focusMode: 'auto',
         aspectRatio: 1.777777778,
         height: this.height,
         width:  this.width
